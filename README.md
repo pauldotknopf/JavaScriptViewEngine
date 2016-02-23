@@ -6,7 +6,7 @@ An ASP.NET MVC (Currently, only MVC6) ViewEngine for rendering markup in a javas
 
 The main drive behind this is to support isomorphic/universal rendering. The idea is that your ```Model``` will be passed to a javascript method that that will render markup in return. Imagine having a react component tree that is hydrated via a single immutable JSON structure, representing the initial state of the service-side rendered page.
 
-There were existing projects our there that allowed us to render javascript. All of them had there issues.
+There were existing projects out there that allowed us to render javascript. All of them had their issues.
 
 - NodeServices - https://github.com/aspnet/NodeServices
   - pros
