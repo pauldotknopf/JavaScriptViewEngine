@@ -30,7 +30,7 @@ JavaScriptViewEngine solves the cons by:
 - ~~No .NET Core support.~~ Using a custom VroomJs implementation that uses the ```project.json``` format, we can ran this on .NET Core.
 
 **TO BE DONE**
-- [ ] Fix ```dnxcore50``` support in the VroomJs dependency. It has many peices that need to be ```#ifdef```'d or updated to user the .NET API.
+- [ ] Fix ```dnxcore50``` support in the VroomJs dependency. It has many peices that need to be ```#ifdef```'d or updated to use the newer .NET API.
 - [ ] Implement pooling for ```IJsEngine``` instances. Currently, we are creating and disposing of contexts for each request thread. This really becomes an issue if you have many ```npm``` modules on your server.
   - [ ] File watching for each ```IJsEngine``` in the pool to update the instances with any changes to local scripts. This is ideal for development.
 - [ ] Support older versions of MVC. The older versions aren't really condusive to _gulp_y environments, but it is nice to have the support there in case anybody needs it.
