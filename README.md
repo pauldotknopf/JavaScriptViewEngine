@@ -92,8 +92,15 @@ public class JsEngineInitializer : IJsEngineInitializer
 
     public void Initialize(IJsEngine engine)
     {
-        engine.Execute("var RenderView = function (path, model) { return '<html><head></head><body><strong>Hello!</strong></body>';};");
-        engine.Execute("var RenderPartialView = function (path, model) { return '<div><strong>Hello!</div></body>';};");
+        engine.Execute(@"
+            var RenderView = function(path, model) {
+                return ""<html><head></head><body><strong>"" + model.Greeting + ""</strong ></body>"";
+            };
+
+            var RenderPartialView = function(path, model) {
+                return ""<div><strong>"" + model.Greeting + ""</strong></div>"";
+            };
+        ");
     }
 }
 ```
