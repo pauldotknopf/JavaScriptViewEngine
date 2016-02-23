@@ -33,7 +33,7 @@ JavaScriptViewEngine solves the cons by:
 - [ ] Fix ```dnxcore50``` support in the VroomJs dependency. It has many peices that need to be ```#ifdef```'d or updated to use the newer .NET API.
 - [ ] Implement pooling for ```IJsEngine``` instances. Currently, we are creating and disposing of contexts for each request thread. This really becomes an issue if you have many ```npm``` modules on your server.
   - [ ] File watching for each ```IJsEngine``` in the pool to update the instances with any changes to local scripts. This is ideal for development.
-- [ ] Support older versions of MVC. The older versions aren't really condusive to *gulp*y environments, but it is nice to have the support there in case anybody needs it.
+- [ ] Support older versions of MVC. The older versions aren't really conducive to *gulp*y environments, but it is nice to have the support there in case anybody needs it.
 - [ ] Create "starter-kits" for getting started with both React and Angular.
 
 # In a nutshell
