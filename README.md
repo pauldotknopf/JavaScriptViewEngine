@@ -8,14 +8,22 @@ The main drive behind this is to support isomorphic/universal rendering. The ide
 
 There were existing projects our there that allowed us to render javascript. All of them had there issues.
 
-- https://github.com/aspnet/NodeServices
+- NodeServices - https://github.com/aspnet/NodeServices
   - pros
     - Supports ASP.NET 5 (ASP.NET Core 1)
     - .NET Core (Windows/Linux/Mac)
   - cons
-    - Still in beta (as of 2/22/2016)
     - Bad performance, local node.exe (with REST endpoints)
-- https://github.com/reactjs/React.NET
+- React.NET - https://github.com/reactjs/React.NET
+  - pros
+    - Embedded javascript engine
+    - Fast
+  - cons
+    - Narrow focus (only React, not Angular)
+    - Opinionated
+    - No .NET Core support.
 
-# What about [ReactJS .NET](http://reactjs.net/)?
-
+JavaScriptViewEngine solves the cons by:
+- ~~Bad performance, local node.exe (with REST endpoints)~~ Using a custom VroomJs implementation that is embedded into the process.
+- ~~Narrow focus (only React, not Angular)~~ This is just a simple view engine. You can do anything with it.
+- ~~Opinionated~~ Again, just a view engine. The React and Angular start templates (TBD) are just that, starter templates. No opinions. Just low friction server-side javascript, exactly how you want it (gulp/grunt/webpack/browserify/babel/etc/etc).
