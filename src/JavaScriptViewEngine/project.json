@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "1.0.0-*",
   "description": "JavaScriptViewEngine Class Library",
   "authors": [ "Paul" ],
@@ -8,6 +8,7 @@
 
   "dependencies": {
     "Microsoft.AspNet.Mvc.ViewFeatures": "6.0.0-rc1-final",
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc1-final",
     "VroomJs": "1.0.1"
   },
 

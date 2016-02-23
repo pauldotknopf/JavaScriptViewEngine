@@ -13,7 +13,7 @@ using System.IO;
 
 namespace Sample.Mvc6
 {
-    public class Startup :  IJsEngineInitializer
+    public class Startup
     {
         IHostingEnvironment _env;
 
@@ -39,8 +39,7 @@ namespace Sample.Mvc6
                 options.ViewEngines.Add(new JsViewEngine());
             });
 
-            services.AddSingleton<IJsEngineFactory, JsEngineFactory>();
-            services.AddInstance<IJsEngineInitializer>(this);
+            services.AddJsEngine<JsEngineInitializer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -77,10 +76,5 @@ namespace Sample.Mvc6
 
         // Entry point for the application.
         public static void Main(string[] args) => WebApplication.Run<Startup>(args);
-
-        public void Initialize(IJsEngine engine)
-        {
-            engine.ExecuteFile(_env.MapPath("server.js"));
-        }
     }
 }
