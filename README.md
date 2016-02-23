@@ -84,13 +84,6 @@ public class Startup
 ```c#
 public class JsEngineInitializer : IJsEngineInitializer
 {
-    private IHostingEnvironment _env;
-
-    public JsEngineInitializer(IHostingEnvironment env)
-    {
-        _env = env;
-    }
-
     public void Initialize(IJsEngine engine)
     {
         engine.Execute(@"
