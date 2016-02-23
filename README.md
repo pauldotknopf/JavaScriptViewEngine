@@ -34,3 +34,66 @@ JavaScriptViewEngine solves the cons by:
 - [ ] Implement pooling for ```IJsEngine``` instances. Currently, we are creating and disposing of contexts for each request thread. This really becomes an issue if you have many ```npm``` modules on your server.
   - [ ] File watching for each ```IJsEngine``` in the pool to update the instances with any changes to local scripts. This is ideal for development.
 - [ ] Support older versions of MVC. The older versions aren't really condusive to _gulp_y environments, but it is nice to have the support there in case anybody needs it.
+
+# In a nutshell
+
+Getting started is pretty simple.
+
+1. Add a reference to the ```JavaScriptViewEngine``` NuGet package.
+2. Setup things app in your ```Startup.cs```.
+```c#
+public class Startup
+{
+    public Startup(IHostingEnvironment env)
+    {
+        ...
+        VroomJs.AssemblyLoader.EnsureLoaded();
+        ...
+    }
+        
+    public void ConfigureServices(IServiceCollection services)
+    {
+        ...
+        services.AddMvc();
+        services.Configure<MvcViewOptions>(options => {
+            options.ViewEngines.Clear(); // no razor engine
+            options.ViewEngines.Add(new JsViewEngine());
+        });
+        services.AddJsEngine<JsEngineInitializer>();
+        ...
+    }
+
+    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+    public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+    {
+        ...
+        app.UseJsEngine(); // this needs to be before MVC
+
+        app.UseMvc(routes =>
+        {
+            routes.MapRoute(
+                name: "default",
+                template: "{controller=Home}/{action=Index}/{id?}");
+        });
+        ...
+    }
+}
+```
+3. Create an ```IJsEngineInitializer``` that will populate each engine with the runtime needed to render your data.
+```c#
+public class JsEngineInitializer : IJsEngineInitializer
+{
+    private IHostingEnvironment _env;
+
+    public JsEngineInitializer(IHostingEnvironment env)
+    {
+        _env = env;
+    }
+
+    public void Initialize(IJsEngine engine)
+    {
+        engine.Execute("var RenderView = function (path, model) { return '<html><head></head><body><strong>Hello!</strong></body>';};");
+        engine.Execute("var RenderPartialView = function (path, model) { return '<div><strong>Hello!</div></body>';};");
+    }
+}
+```
