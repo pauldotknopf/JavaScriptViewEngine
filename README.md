@@ -104,3 +104,18 @@ public class JsEngineInitializer : IJsEngineInitializer
     }
 }
 ```
+4. Get rolling in MVC.
+```c#
+public class HomeController : Controller
+{
+    public IActionResult Index(string greeting = "Hello word!")
+    {
+        return View(new GreetingViewModel { Greeting = greeting });
+    }
+}
+
+public class GreetingViewModel
+{
+    public string Greeting { get; set; }
+}
+```
