@@ -7,13 +7,15 @@ namespace JavaScriptViewEngine
     public class JsEngineFactory : IJsEngineFactory
     {
         private readonly IJsEngineInitializer _engineInitializer;
+        private readonly IJsEngineBuilder _engineBuilder;
         protected readonly ConcurrentDictionary<int, IJsEngine> Engines = new ConcurrentDictionary<int, IJsEngine>();
         private bool _disposed;
         private readonly object _lock = new object();
 
-        public JsEngineFactory(IJsEngineInitializer engineInitializer)
+        public JsEngineFactory(IJsEngineInitializer engineInitializer, IJsEngineBuilder engineBuilder)
         {
             _engineInitializer = engineInitializer;
+            _engineBuilder = engineBuilder;
         }
         
         public virtual IJsEngine GetEngineForCurrentThread()
@@ -21,7 +23,7 @@ namespace JavaScriptViewEngine
             EnsureValidState();
             return Engines.GetOrAdd(Thread.CurrentThread.ManagedThreadId, id =>
             {
-                var engine = new VroomJsEngine();
+                var engine = _engineBuilder.Build();
                 _engineInitializer.Initialize(engine);
                 return engine;
             });

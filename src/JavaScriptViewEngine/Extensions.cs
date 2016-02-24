@@ -19,6 +19,7 @@ namespace JavaScriptViewEngine
         {
             services.AddSingleton<IJsEngineFactory, JsEngineFactory>();
             services.AddScoped<IJsEngineInitializer, T>();
+            services.AddSingleton<IJsEngineBuilder, JsEngineBuilder>();
         }
     }
 }
