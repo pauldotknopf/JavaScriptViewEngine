@@ -6,10 +6,17 @@
   "projectUrl": "",
   "licenseUrl": "",
 
+  "resource": [
+    "Edge/double_edge.js",
+    "Edge/node-x64.dll",
+    "Edge/node-x86.dll"
+  ],
+
   "dependencies": {
     "Microsoft.AspNet.Mvc.ViewFeatures": "6.0.0-rc1-final",
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc1-final",
-    "VroomJs": "1.0.1"
+    "VroomJs": "1.0.1",
+    "Edge.js": "4.0.0"
   },
 
   "frameworks": {
