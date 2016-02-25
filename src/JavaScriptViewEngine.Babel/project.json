@@ -1,10 +1,14 @@
 {
   "version": "1.0.0-*",
-  "description": "JavaScriptViewEngine.Babel Class Library",
+  "title": "JavaScriptViewEngine.Babel",
+  "description": "A helper library, for JavaScriptViewEngine, that will transpile ES6.",
+  "summary": "A helper library, for JavaScriptViewEngine, that will transpile ES6.",
   "authors": [ "Paul" ],
-  "tags": [ "" ],
-  "projectUrl": "",
-  "licenseUrl": "",
+  "tags": [ "JavaScript", "aspnet", "mvc", "viewengine", "babel" ],
+  "projectUrl": "https://github.com/pauldotknopf/JavaScriptViewEngine",
+  "licenseUrl": "https://github.com/pauldotknopf/JavaScriptViewEngine/blob/master/LICENSE",
+  "copyright": "2016",
+
   "frameworks": {
     "net451": { },
     "dnx451": { }

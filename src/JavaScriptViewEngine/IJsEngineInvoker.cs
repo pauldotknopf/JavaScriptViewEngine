@@ -11,8 +11,18 @@ namespace JavaScriptViewEngine
         Full,
         Partial
     }
+
+    public class ViewInvokeResult
+    {
+        public string Html { get; set; }
+
+        public int Status { get; set; }
+
+        public string Redirect { get; set; }
+    }
+
     public interface IJsEngineInvoker
     {
-        Task<string> InvokeEngine(IJsEngine engine, ViewType type, string path, ViewContext context);
+        Task<ViewInvokeResult> InvokeEngine(IJsEngine engine, ViewType type, string path, ViewContext context);
     }
 }

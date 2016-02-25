@@ -1,10 +1,13 @@
 {
   "version": "1.0.0-*",
-  "description": "JavaScriptViewEngine Class Library",
+  "title": "JavaScriptViewEngine",
+  "description": "An ASP.NET ViewEngine that uses javscript to render markup (for universal rendering).",
+  "summary": "An ASP.NET ViewEngine that uses javscript to render markup (for universal rendering).",
   "authors": [ "Paul" ],
-  "tags": [ "" ],
-  "projectUrl": "",
-  "licenseUrl": "",
+  "tags": [ "JavaScript", "aspnet", "mvc", "viewengine" ],
+  "projectUrl": "https://github.com/pauldotknopf/JavaScriptViewEngine",
+  "licenseUrl": "https://github.com/pauldotknopf/JavaScriptViewEngine/blob/master/LICENSE",
+  "copyright": "2016",
 
   "dependencies": {
     "Microsoft.AspNet.Mvc.ViewFeatures": "6.0.0-rc1-final",

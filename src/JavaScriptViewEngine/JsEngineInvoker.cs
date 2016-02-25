@@ -8,9 +8,24 @@ namespace JavaScriptViewEngine
 {
     public class JsEngineInvoker : IJsEngineInvoker
     {
-        public Task<string> InvokeEngine(IJsEngine engine, ViewType type, string path, ViewContext context)
+        public Task<ViewInvokeResult> InvokeEngine(IJsEngine engine, ViewType type, string path, ViewContext context)
         {
-            return Task.FromResult((string)engine.CallFunction(type == ViewType.Full ? "RenderView" : "RenderPartialView", path, context.ViewData.Model));
+            if (type == ViewType.Full)
+            {
+                var result = (dynamic)engine.CallFunction(type == ViewType.Full ? "RenderView" : "RenderPartialView", path, context.ViewData.Model);
+                return Task.FromResult(new ViewInvokeResult {
+                    Html = result.html,
+                    Status = result.status,
+                    Redirect = result.redirect
+                });
+            }
+            else if (type == ViewType.Partial)
+                return Task.FromResult(new ViewInvokeResult
+                {
+                    Html = (string)engine.CallFunction(type == ViewType.Full ? "RenderView" : "RenderPartialView", path, context.ViewData.Model)
+                });
+            else
+                throw new Exception("Unknown view type.");
         }
     }
 }

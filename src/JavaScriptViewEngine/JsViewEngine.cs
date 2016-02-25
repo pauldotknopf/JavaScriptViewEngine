@@ -49,7 +49,14 @@ namespace JavaScriptViewEngine
 
                 var result = await _jsEngineInvoker.InvokeEngine(jsEngine, ViewType, Path, context);
                 
-                await context.Writer.WriteAsync(result);
+                if(!string.IsNullOrEmpty(result.Redirect))
+                {
+                    context.HttpContext.Response.Redirect(result.Redirect);
+                    return;
+                }
+
+                await context.Writer.WriteAsync(result.Html);
+                context.HttpContext.Response.StatusCode = result.Status;
             }
         }
     }
