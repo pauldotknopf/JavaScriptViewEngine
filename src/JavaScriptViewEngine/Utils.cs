@@ -5,17 +5,26 @@ using System.Text;
 
 namespace JavaScriptViewEngine
 {
+    /// <summary>
+    /// Some internal utility methods
+    /// </summary>
     internal static class Utils
     {
+        /// <summary>
+        /// Gets an embedded resource as a string
+        /// </summary>
         public static string GetResourceAsString(string resourceName, Type type)
         {
             var assembly = type.Assembly;
             return GetResourceAsString(resourceName, assembly);
         }
-        
+
+        /// <summary>
+        /// GGets an embedded resource as a string
+        /// </summary>
         public static string GetResourceAsString(string resourceName, Assembly assembly)
         {
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (var stream = assembly.GetManifestResourceStream(resourceName))
             {
                 if (stream == null)
                     throw new NullReferenceException(string.Format("No resource found for " + resourceName));
@@ -24,7 +33,10 @@ namespace JavaScriptViewEngine
                     return reader.ReadToEnd();
             }
         }
-        
+
+        /// <summary>
+        /// Load a file 
+        /// </summary>
         public static string GetFileTextContent(string path, Encoding encoding = null)
         {
             if (!File.Exists(path))

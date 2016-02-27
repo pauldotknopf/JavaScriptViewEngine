@@ -6,13 +6,21 @@ using VroomJs;
 
 namespace JavaScriptViewEngine
 {
+    /// <summary>
+    /// The default implementing of <see cref="IJsEngine"/> that uses V8
+    /// </summary>
+    /// <seealso cref="JavaScriptViewEngine.IJsEngine" />
     public class VroomJsEngine : IJsEngine
     {
         private static readonly Lazy<JsEngine> JsEngine = new Lazy<JsEngine>(() => new JsEngine());
         private readonly JsContext _context;
         private readonly object _lock = new object();
         private bool _disposed = false;
-        
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VroomJsEngine"/> class.
+        /// </summary>
+        /// <exception cref="System.Exception">V8 engine context couldn't be created.</exception>
         public VroomJsEngine()
         {
             try
@@ -27,6 +35,12 @@ namespace JavaScriptViewEngine
             _context.Execute("");
         }
 
+        /// <summary>
+        /// Call a function with the given arguments.
+        /// </summary>
+        /// <param name="function">The function.</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns></returns>
         public object CallFunction(string function, params object[] args)
         {
             VerifyNotDisposed();
@@ -36,6 +50,13 @@ namespace JavaScriptViewEngine
             return _context.Execute(code);
         }
 
+        /// <summary>
+        /// Call a function with the given arguments.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="function">The function.</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns></returns>
         public T CallFunction<T>(string function, params object[] args)
         {
             VerifyNotDisposed();
@@ -43,6 +64,11 @@ namespace JavaScriptViewEngine
             return (T)CallFunction(function, args);
         }
 
+        /// <summary>
+        /// Excecutes some JavaScript in the engine.
+        /// </summary>
+        /// <param name="code">The code.</param>
+        /// <exception cref="System.ArgumentNullException"></exception>
         public void Execute(string code)
         {
             VerifyNotDisposed();
@@ -53,6 +79,12 @@ namespace JavaScriptViewEngine
             _context.Execute(code);
         }
 
+        /// <summary>
+        /// Load the file and execute it in the engine.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="encoding"></param>
+        /// <exception cref="System.ArgumentNullException"></exception>
         public void ExecuteFile(string path, Encoding encoding = null)
         {
             VerifyNotDisposed();
@@ -64,6 +96,13 @@ namespace JavaScriptViewEngine
             Execute(code);
         }
 
+        /// <summary>
+        /// Load an embedded resource and execute it in the engine.
+        /// </summary>
+        /// <param name="resourceName"></param>
+        /// <param name="type"></param>
+        /// <exception cref="System.ArgumentException"></exception>
+        /// <exception cref="System.ArgumentNullException"></exception>
         public void ExecuteResource(string resourceName, Type type)
         {
             if (string.IsNullOrWhiteSpace(resourceName))
@@ -76,12 +115,19 @@ namespace JavaScriptViewEngine
             Execute(code);
         }
 
+        /// <summary>
+        /// Verifies the not disposed.
+        /// </summary>
+        /// <exception cref="System.ObjectDisposedException"></exception>
         protected void VerifyNotDisposed()
         {
             if (_disposed)
                 throw new ObjectDisposedException(ToString());
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             if (!_disposed)

@@ -6,8 +6,21 @@ using Microsoft.AspNet.Mvc.Rendering;
 
 namespace JavaScriptViewEngine
 {
+    /// <summary>
+    /// The default <see cref="IJsEngineInvoker"/>
+    /// </summary>
+    /// <seealso cref="JavaScriptViewEngine.IJsEngineInvoker" />
     public class JsEngineInvoker : IJsEngineInvoker
     {
+        /// <summary>
+        /// Invokes the engine and returns the result of the invocation.
+        /// </summary>
+        /// <param name="engine">The engine.</param>
+        /// <param name="type">The type.</param>
+        /// <param name="path">The path.</param>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
+        /// <exception cref="System.Exception">Unknown view type.</exception>
         public Task<ViewInvokeResult> InvokeEngine(IJsEngine engine, ViewType type, string path, ViewContext context)
         {
             if (type == ViewType.Full)
