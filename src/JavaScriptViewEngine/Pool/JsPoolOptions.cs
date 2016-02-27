@@ -53,5 +53,18 @@ namespace JavaScriptViewEngine.Pool
         /// is ran. Only used if the engine supports garbage collection (V8).
         /// </summary>
         public int GarbageCollectionInterval { get; set; }
+
+        /// <summary>
+		/// Gets or sets the path to watch for file changes. If any files in this path change,
+		/// all engines in the pool will be recycled
+		/// </summary>
+		public string WatchPath { get; set; }
+
+        /// <summary>
+        /// Gets or sets the file paths to watch for file changes. Requires 
+        /// <see cref="WatchPath" /> to be set too. If not set, all files in 
+        /// <see cref="WatchPath" /> will be watched.
+        /// </summary>
+        public IEnumerable<string> WatchFiles { get; set; }
     }
 }

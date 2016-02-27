@@ -21,6 +21,7 @@ namespace JavaScriptViewEngine.Pool
         readonly JsPoolOptions _options;
         readonly IJsEngineInitializer _jsEngineInitializer;
         readonly IJsEngineBuilder _jsEngineBuilder;
+        readonly IFileWatcher _fileWatcher;
         readonly BlockingCollection<IJsEngine> _availableEngines = new BlockingCollection<IJsEngine>();
         readonly IDictionary<IJsEngine, EngineMetadata> _metadata = new Dictionary<IJsEngine, EngineMetadata>();
         int _engineCount;
@@ -34,12 +35,19 @@ namespace JavaScriptViewEngine.Pool
         /// <summary>
         /// Creates a new JavaScript engine pool
         /// </summary>
-        public JsPool(IOptions<JsPoolOptions> options, IJsEngineInitializer jsEngineInitializer, IJsEngineBuilder jsEngineBuilder)
+        public JsPool(
+            IOptions<JsPoolOptions> options, 
+            IJsEngineInitializer jsEngineInitializer, 
+            IJsEngineBuilder jsEngineBuilder,
+            IFileWatcher fileWatcher
+            )
         {
             _options = options.Value;
             _jsEngineInitializer = jsEngineInitializer;
             _jsEngineBuilder = jsEngineBuilder;
+            _fileWatcher = fileWatcher;
             PopulateEngines();
+            InitializeWatcher();
         }
 
         #endregion
@@ -183,11 +191,26 @@ namespace JavaScriptViewEngine.Pool
         {
             DisposeAllEngines();
             _cancellationTokenSource.Cancel();
+            _fileWatcher?.Dispose();
         }
 
         #endregion
 
         #region Methods
+
+        /// <summary>
+		/// Initializes a <see cref="FileWatcher"/> if enabled in the configuration.
+		/// </summary>
+		private void InitializeWatcher()
+        {
+            if (!string.IsNullOrEmpty(_options.WatchPath))
+            {
+                _fileWatcher.Path = _options.WatchPath;
+                _fileWatcher.Files = _options.WatchFiles;
+                _fileWatcher.Changed += (sender, args) => Recycle();
+                _fileWatcher.Start();
+            }
+        }
 
         /// <summary>
         /// Ensures that at least <see cref="JsPoolOptions.StartEngines"/> engines have been created.

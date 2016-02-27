@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using JavaScriptViewEngine;
 using System.IO;
+using JavaScriptViewEngine.Pool;
 
 namespace Sample.Mvc6
 {
@@ -19,6 +20,7 @@ namespace Sample.Mvc6
 
         public Startup(IHostingEnvironment env)
         {
+            _env = env;
             VroomJs.AssemblyLoader.EnsureLoaded();
 
             // Set up configuration sources.
@@ -38,15 +40,17 @@ namespace Sample.Mvc6
                 options.ViewEngines.Clear(); // no razor engine
                 options.ViewEngines.Add(new JsViewEngine());
             });
-
+            
             services.AddJsEngine<JsEngineInitializer>();
+            services.Configure<JsPoolOptions>(options =>
+            {
+                options.WatchPath = _env.WebRootPath;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            _env = env;
-
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
             
