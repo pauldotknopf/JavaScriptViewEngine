@@ -5,24 +5,73 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using JavaScriptViewEngine.Pool;
+using Microsoft.AspNet.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.OptionsModel;
 
 namespace JavaScriptViewEngine
 {
     public static class Extensions
     {
+        /// <summary>
+        /// Added the middlware that creates and disposes a <see cref="IJsEngine"/> for each request
+        /// </summary>
+        /// <param name="app">The application.</param>
         public static void UseJsEngine(this IApplicationBuilder app)
         {
             app.UseMiddleware<JsEngineMiddleware>();
         }
 
+        /// <summary>
+        /// Add the services required to use a JavaScript engine, a pool, etc.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="services">The services.</param>
         public static void AddJsEngine<T>(this IServiceCollection services) where T : class, IJsEngineInitializer
         {
-            services.AddTransient<IFileWatcher, FileWatcher>();
-            services.AddTransient<IJsPool, JsPool>();
-            services.AddTransient<IJsEngineInitializer, T>();
-            services.AddTransient<IJsEngineBuilder, JsEngineBuilder>();
-            services.AddSingleton<IJsEngineFactory, JsEngineFactory>();
+            services.TryAddEnumerable(ServiceDescriptor.Transient<IConfigureOptions<MvcViewOptions>, JavaScriptViewEngineMvcViewOptionsSetup>());
+            services.TryAddTransient<IFileWatcher, FileWatcher>();
+            services.TryAddTransient<IJsPool, JsPool>();
+            services.TryAddTransient<IJsEngineInitializer, T>();
+            services.TryAddTransient<IJsEngineBuilder, JsEngineBuilder>();
+            services.TryAddSingleton<IJsEngineFactory, JsEngineFactory>();
+            services.TryAddTransient<IJsViewEngine, JsViewEngine>();
+            services.TryAddTransient<IJsEngineInvoker, JsEngineInvoker>();
+        }
+
+        /// <summary>
+        /// This will add <see cref="JsViewEngine"/> to a collection used by mvc to render
+        /// </summary>
+        internal class JavaScriptViewEngineMvcViewOptionsSetup : ConfigureOptions<MvcViewOptions>
+        {
+            /// <summary>
+            /// Initializes a new instance of <see cref="JavaScriptViewEngineMvcViewOptionsSetup"/>.
+            /// </summary>
+            /// <param name="serviceProvider">The application's <see cref="IServiceProvider"/>.</param>
+            public JavaScriptViewEngineMvcViewOptionsSetup(IServiceProvider serviceProvider)
+                : base(options => ConfigureMvc(serviceProvider, options))
+            {
+            }
+
+            /// <summary>
+            /// Configures <paramref name="options"/> to use <see cref="JsViewEngine"/>.
+            /// </summary>
+            /// <param name="serviceProvider">The application's <see cref="IServiceProvider"/>.</param>
+            /// <param name="options">The <see cref="MvcViewOptions"/> to configure.</param>
+            public static void ConfigureMvc(
+                IServiceProvider serviceProvider,
+                MvcViewOptions options)
+            {
+                if (serviceProvider == null)
+                    throw new ArgumentNullException(nameof(serviceProvider));
+
+                if (options == null)
+                    throw new ArgumentNullException(nameof(options));
+
+                var jsViewEngine = serviceProvider.GetRequiredService<IJsViewEngine>();
+                options.ViewEngines.Add(jsViewEngine);
+            }
         }
     }
 }

@@ -36,12 +36,7 @@ namespace Sample.Mvc6
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.Configure<MvcViewOptions>(options => {
-                options.ViewEngines.Clear(); // no razor engine
-                options.ViewEngines.Add(new JsViewEngine());
-            });
-            
-            services.AddJsEngine<JsEngineInitializer>();
+            services.AddJsEngine<CustomEngineInitializer>();
             services.Configure<JsPoolOptions>(options =>
             {
                 options.WatchPath = _env.WebRootPath;

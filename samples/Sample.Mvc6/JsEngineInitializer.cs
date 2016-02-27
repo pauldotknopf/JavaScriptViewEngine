@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Sample.Mvc6
 {
-    public class JsEngineInitializer : IJsEngineInitializer
+    public class CustomEngineInitializer : IJsEngineInitializer
     {
         private IHostingEnvironment _env;
 
-        public JsEngineInitializer(IHostingEnvironment env)
+        public CustomEngineInitializer(IHostingEnvironment env)
         {
             _env = env;
         }
