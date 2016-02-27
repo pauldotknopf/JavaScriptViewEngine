@@ -21,9 +21,10 @@ namespace JavaScriptViewEngine.Middleware
 
         public async Task Invoke(HttpContext context)
         {
+            IJsEngine engine = null;
             try
             {
-                var engine = _javaScriptEngineFactory.GetEngineForCurrentThread();
+                engine = _javaScriptEngineFactory.GetEngine();
 
                 context.Items["JsEngine"] = engine;
 
@@ -31,7 +32,8 @@ namespace JavaScriptViewEngine.Middleware
             }
             finally
             {
-                _javaScriptEngineFactory.DisposeEngineForCurrentThread();
+                if(engine != null)
+                    _javaScriptEngineFactory.ReturnEngineToPool(engine);
             }
         }
     }

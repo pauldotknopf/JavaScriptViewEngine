@@ -19,13 +19,12 @@ namespace JavaScriptViewEngine
                     Redirect = result.redirect
                 });
             }
-            else if (type == ViewType.Partial)
+            if (type == ViewType.Partial)
                 return Task.FromResult(new ViewInvokeResult
                 {
                     Html = (string)engine.CallFunction(type == ViewType.Full ? "RenderView" : "RenderPartialView", path, context.ViewData.Model)
                 });
-            else
-                throw new Exception("Unknown view type.");
+            throw new Exception("Unknown view type.");
         }
     }
 }
