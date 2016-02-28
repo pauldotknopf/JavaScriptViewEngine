@@ -5,6 +5,7 @@ using Microsoft.AspNet.Mvc.ViewEngines;
 using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Mvc.Rendering;
 using Microsoft.Extensions.OptionsModel;
+using Newtonsoft.Json;
 
 namespace JavaScriptViewEngine
 {
@@ -113,7 +114,7 @@ namespace JavaScriptViewEngine
                 var jsEngine = context.HttpContext.Request.HttpContext.Items["JsEngine"] as IJsEngine;
 
                 if (jsEngine == null) throw new Exception("Couldn't get IJsEngine from the context request items.");
-
+                
                 var result = await _jsEngineInvoker.InvokeEngine(jsEngine, ViewType, Path, context);
 
                 if (ViewType == ViewType.Full)

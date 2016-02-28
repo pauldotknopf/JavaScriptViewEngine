@@ -33,6 +33,7 @@ namespace JavaScriptViewEngine
             }
 
             _context.Execute("");
+            _context.SetVariable("console", new EngineConsole());
         }
 
         /// <summary>
@@ -77,6 +78,7 @@ namespace JavaScriptViewEngine
                 throw new ArgumentNullException(nameof(code));
 
             _context.Execute(code);
+
         }
 
         /// <summary>
@@ -114,7 +116,7 @@ namespace JavaScriptViewEngine
             var code = Utils.GetResourceAsString(resourceName, type);
             Execute(code);
         }
-
+        
         /// <summary>
         /// Verifies the not disposed.
         /// </summary>
@@ -141,5 +143,22 @@ namespace JavaScriptViewEngine
                 _context.Dispose();
             }
         }
+
+        #region Nested Types
+
+        class EngineConsole
+        {
+            public void log(string args)
+            {
+                Console.WriteLine("console.log(\"" + args + "\")");
+            }
+
+            public void log(dynamic arg)
+            {
+                Console.WriteLine("console.log(\"" + JsonConvert.SerializeObject(arg) + "\")");
+            }
+        }
+
+        #endregion
     }
 }
