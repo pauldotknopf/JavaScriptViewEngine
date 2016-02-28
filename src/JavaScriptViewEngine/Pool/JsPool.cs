@@ -205,6 +205,7 @@ namespace JavaScriptViewEngine.Pool
         {
             if (!string.IsNullOrEmpty(_options.WatchPath))
             {
+                _fileWatcher.DebounceTimeout = _options.WatchDebounceTimeout;
                 _fileWatcher.Path = _options.WatchPath;
                 _fileWatcher.Files = _options.WatchFiles;
                 _fileWatcher.Changed += (sender, args) => Recycle();

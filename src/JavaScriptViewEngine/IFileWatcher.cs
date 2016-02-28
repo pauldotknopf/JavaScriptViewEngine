@@ -25,6 +25,12 @@ namespace JavaScriptViewEngine
         IEnumerable<string> Files { get; set; }
 
         /// <summary>
+        /// The debounce timeout before a file changed event is fired.
+        /// Give this a large value when you are watching a large directory that has many changes during a build process.
+        /// </summary>
+        int DebounceTimeout { get; set; }
+
+        /// <summary>
         /// Starts watching for changes in the specified path.
         /// </summary>
         /// <returns>Whether creation of the watcher was successful</returns>

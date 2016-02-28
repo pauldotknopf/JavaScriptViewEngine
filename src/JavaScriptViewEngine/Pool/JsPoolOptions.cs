@@ -21,6 +21,7 @@ namespace JavaScriptViewEngine.Pool
             MaxUsagesPerEngine = 100;
             GarbageCollectionInterval = 20;
             GetEngineTimeout = TimeSpan.FromSeconds(5);
+            WatchDebounceTimeout = 50;
         }
 
         /// <summary>
@@ -66,5 +67,11 @@ namespace JavaScriptViewEngine.Pool
         /// <see cref="WatchPath" /> will be watched.
         /// </summary>
         public IEnumerable<string> WatchFiles { get; set; }
+
+        /// <summary>
+        /// The debounce timeout before a file changed event is fired.
+        /// Give this a large value when you are watching a large directory that has many changes during a build process.
+        /// </summary>
+        public int WatchDebounceTimeout { get; set; }
     }
 }

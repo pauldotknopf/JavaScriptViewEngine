@@ -12,10 +12,25 @@ namespace JavaScriptViewEngine
 	/// </summary>
 	public class FileWatcher : IFileWatcher
     {
+        #region Fields
+
         FileSystemWatcher _watcher;
         ISet<string> _watchedFiles;
         Timer _timer;
-        const int DebounceTimeout = 25;
+
+        #endregion
+
+        #region Ctor
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileWatcher"/> class.
+        /// </summary>
+        public FileWatcher()
+        {
+            DebounceTimeout = 25;
+        }
+
+        #endregion
 
         #region IFileWatcher
 
@@ -48,6 +63,12 @@ namespace JavaScriptViewEngine
                 }
             }
         }
+
+        /// <summary>
+        /// The debounce timeout before a file changed event is fired.
+        /// Give this a large value when you are watching a large directory that has many changes during a build process.
+        /// </summary>
+        public int DebounceTimeout { get; set; }
 
         /// <summary>
         /// Starts watching for changes in the specified path.
