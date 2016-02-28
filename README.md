@@ -43,7 +43,7 @@ Getting started is pretty simple.
 ```c#
 public class Startup
 {
-    public Startup(IHostingEnvironment env)
+    public Startup()
     {
         ...
         VroomJs.AssemblyLoader.EnsureLoaded();
@@ -54,15 +54,10 @@ public class Startup
     {
         ...
         services.AddMvc();
-        services.Configure<MvcViewOptions>(options => {
-            options.ViewEngines.Clear(); // no razor engine
-            options.ViewEngines.Add(new JsViewEngine());
-        });
-        services.AddJsEngine<JsEngineInitializer>();
+        services.AddJsEngine<CustomEngineInitializer>();
         ...
     }
-
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        
     public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
     {
         ...
