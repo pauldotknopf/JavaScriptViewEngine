@@ -148,12 +148,22 @@ namespace JavaScriptViewEngine
 
         class EngineConsole
         {
-            public void log(string args)
+            public void log(string arg)
             {
-                Console.WriteLine("console.log(\"" + args + "\")");
+                Console.WriteLine("console.log(\"" + arg + "\")");
             }
 
             public void log(dynamic arg)
+            {
+                Console.WriteLine("console.log(\"" + JsonConvert.SerializeObject(arg) + "\")");
+            }
+
+            public void error(string arg)
+            {
+                Console.WriteLine("console.log(\"" + arg + "\")");
+            }
+
+            public void error(dynamic arg)
             {
                 Console.WriteLine("console.log(\"" + JsonConvert.SerializeObject(arg) + "\")");
             }
