@@ -116,7 +116,19 @@ namespace JavaScriptViewEngine
             var code = Utils.GetResourceAsString(resourceName, type);
             Execute(code);
         }
-        
+
+        /// <summary>
+        /// Gets the global object, and set/read some properties from it.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        public void GetGlobal(Action<dynamic> action)
+        {
+            if(action == null)
+                throw new ArgumentNullException(nameof(action));
+
+            action(_context.GetGlobal());
+        }
+
         /// <summary>
         /// Verifies the not disposed.
         /// </summary>

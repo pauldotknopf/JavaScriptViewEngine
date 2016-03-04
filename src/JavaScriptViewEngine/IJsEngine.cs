@@ -40,5 +40,11 @@ namespace JavaScriptViewEngine
         /// Load an embedded resource and execute it in the engine.
         /// </summary>
         void ExecuteResource(string resourceName, Type type);
+
+        /// <summary>
+        /// Gets the global object, and set/read some properties from it.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        void GetGlobal(Action<dynamic> action);
     }
 }
