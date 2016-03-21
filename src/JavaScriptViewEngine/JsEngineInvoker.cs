@@ -25,6 +25,15 @@ namespace JavaScriptViewEngine
         {
             if (type == ViewType.Full)
             {
+                if(string.Equals(path, "{auto}", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    path = context.HttpContext.Request.Path;
+                    if(context.HttpContext.Request.QueryString.HasValue)
+                    {
+                        path += context.HttpContext.Request.QueryString.Value;
+                    }
+                }
+
                 var result = (dynamic)engine.CallFunction(type == ViewType.Full ? "RenderView" : "RenderPartialView", path, context.ViewData.Model);
                 return Task.FromResult(new ViewInvokeResult {
                     Html = result.html,

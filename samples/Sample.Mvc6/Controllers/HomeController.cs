@@ -11,7 +11,7 @@ namespace Sample.Mvc6.Controllers
     {
         public IActionResult Index(string greeting = "Hello word!")
         {
-            return View("js-Index", new GreetingViewModel { Greeting = greeting });
+            return View("js-{auto}", new GreetingViewModel { Greeting = greeting });
         }
     }
 }
