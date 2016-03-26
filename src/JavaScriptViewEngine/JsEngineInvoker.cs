@@ -34,7 +34,7 @@ namespace JavaScriptViewEngine
                     }
                 }
 
-                var result = (dynamic)engine.CallFunction(type == ViewType.Full ? "RenderView" : "RenderPartialView", path, context.ViewData.Model);
+                var result = engine.CallFunction("RenderView", path, context.ViewData.Model, context.ViewBag);
                 return Task.FromResult(new ViewInvokeResult {
                     Html = result.html,
                     Status = result.status,
@@ -44,7 +44,7 @@ namespace JavaScriptViewEngine
             if (type == ViewType.Partial)
                 return Task.FromResult(new ViewInvokeResult
                 {
-                    Html = (string)engine.CallFunction(type == ViewType.Full ? "RenderView" : "RenderPartialView", path, context.ViewData.Model)
+                    Html = (string)engine.CallFunction("RenderPartialView", path, context.ViewData.Model, context.ViewBag)
                 });
             throw new Exception("Unknown view type.");
         }

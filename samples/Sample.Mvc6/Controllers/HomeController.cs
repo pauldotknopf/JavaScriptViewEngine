@@ -11,6 +11,8 @@ namespace Sample.Mvc6.Controllers
     {
         public IActionResult Index(string greeting = "Hello word!")
         {
+            ViewBag.propertyOnViewBag = "This is set in the controller";
+            ViewBag.currentDate = DateTime.Now;
             return View("js-{auto}", new GreetingViewModel { Greeting = greeting });
         }
     }
