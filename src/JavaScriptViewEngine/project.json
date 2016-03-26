@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-*",
+  "version": "1.1.0-*",
   "title": "JavaScriptViewEngine",
   "description": "An ASP.NET ViewEngine that uses javscript to render markup (for universal rendering).",
   "summary": "An ASP.NET ViewEngine that uses javscript to render markup (for universal rendering).",
