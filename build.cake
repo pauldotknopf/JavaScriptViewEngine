@@ -43,7 +43,6 @@ Task("Build")
 {
     ExecuteCommand("dnu restore");
     ExecuteCommand(string.Format("dnu publish \"src/JavaScriptViewEngine/project.json\" --configuration \"{0}\" --no-source -o \"{1}\"", configuration, System.IO.Path.Combine(buildDir, "JavaScriptViewEngine")));
-    ExecuteCommand(string.Format("dnu publish \"src/JavaScriptViewEngine.Babel/project.json\" --configuration \"{0}\" --no-source -o \"{1}\"", configuration, System.IO.Path.Combine(buildDir, "JavaScriptViewEngine.Babel")));
 });
 
 Task("Test")
@@ -65,13 +64,6 @@ Task("Deploy")
         CreateDirectory(destination);
 
     CopyDirectory(System.IO.Path.Combine(buildDir, "JavaScriptViewEngine"), destination);
-
-    destination =  System.IO.Path.Combine(distDir, "JavaScriptViewEngine.Babel");
-
-    if(!DirectoryExists(destination))
-        CreateDirectory(destination);
-
-    CopyDirectory(System.IO.Path.Combine(buildDir, "JavaScriptViewEngine.Babel"), destination);
 });
 
 //////////////////////////////////////////////////////////////////////
