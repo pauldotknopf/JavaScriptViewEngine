@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc.ViewEngines;
-using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Mvc.Rendering;
-using Microsoft.Extensions.OptionsModel;
-using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.Extensions.Options;
 
 namespace JavaScriptViewEngine
 {
@@ -30,55 +29,23 @@ namespace JavaScriptViewEngine
             _jsEngineInvoker = jsEngineInvoker;
             _options = options.Value;
         }
-
-        /// <summary>
-        /// Finds the partial view.
-        /// </summary>
-        /// <param name="context">The context.</param>
-        /// <param name="partialViewName">Partial name of the view.</param>
-        /// <returns></returns>
-        public ViewEngineResult FindPartialView(ActionContext context, string partialViewName)
+        
+        public ViewEngineResult FindView(ActionContext context, string viewName, bool isMainPage)
         {
-            if(string.IsNullOrEmpty(partialViewName))
-                return ViewEngineResult.NotFound(partialViewName, Enumerable.Empty<string>());
-
-            if (!string.IsNullOrEmpty(_options.ViewNamePrefix) && !partialViewName.StartsWith(_options.ViewNamePrefix))
-                return ViewEngineResult.NotFound(partialViewName, Enumerable.Empty<string>());
-
-            return ViewEngineResult.Found(partialViewName, 
-                new JsView(_jsEngineInvoker)
-                {
-                    ViewType = ViewType.Partial,
-                    Path = !string.IsNullOrEmpty(_options.ViewNamePrefix) ? partialViewName.Substring(_options.ViewNamePrefix.Length) : partialViewName
-                });
+            // TODO: Fix
+            return null;
         }
 
-        /// <summary>
-        /// Finds the view.
-        /// </summary>
-        /// <param name="context">The context.</param>
-        /// <param name="viewName">Name of the view.</param>
-        /// <returns></returns>
-        public ViewEngineResult FindView(ActionContext context, string viewName)
+        public ViewEngineResult GetView(string executingFilePath, string viewPath, bool isMainPage)
         {
-            if (string.IsNullOrEmpty(viewName))
-                return ViewEngineResult.NotFound(viewName, Enumerable.Empty<string>());
-
-            if (!string.IsNullOrEmpty(_options.ViewNamePrefix) && !viewName.StartsWith(_options.ViewNamePrefix))
-                return ViewEngineResult.NotFound(viewName, Enumerable.Empty<string>());
-
-            return ViewEngineResult.Found(viewName, 
-                new JsView(_jsEngineInvoker)
-                {
-                    ViewType = ViewType.Full,
-                    Path = !string.IsNullOrEmpty(_options.ViewNamePrefix) ? viewName.Substring(_options.ViewNamePrefix.Length) : viewName
-                });
+            // TODO: Fix
+            return null;
         }
 
         /// <summary>
         /// The view that invokes a javascript engine with the model, and writes the output to the response.
         /// </summary>
-        /// <seealso cref="Microsoft.AspNet.Mvc.ViewEngines.IView" />
+        /// <seealso cref="IView" />
         public class JsView : IView
         {
             private readonly IJsEngineInvoker _jsEngineInvoker;

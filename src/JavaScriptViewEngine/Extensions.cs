@@ -1,14 +1,11 @@
 ﻿using JavaScriptViewEngine.Middleware;
-using Microsoft.AspNet.Builder;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using JavaScriptViewEngine.Pool;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.OptionsModel;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Mvc;
 
 namespace JavaScriptViewEngine
 {

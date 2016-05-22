@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace JavaScriptViewEngine
 {
@@ -25,7 +23,7 @@ namespace JavaScriptViewEngine
         {
             if (type == ViewType.Full)
             {
-                if(string.Equals(path, "{auto}", StringComparison.InvariantCultureIgnoreCase))
+                if(string.Equals(path, "{auto}", StringComparison.OrdinalIgnoreCase))
                 {
                     path = context.HttpContext.Request.Path;
                     if(context.HttpContext.Request.QueryString.HasValue)
