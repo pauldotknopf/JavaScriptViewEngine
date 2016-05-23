@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -76,9 +77,9 @@ namespace JavaScriptViewEngine
                         path += context.HttpContext.Request.QueryString.Value;
                     }
                 }
-
-                var result = await renderEngine.Render(path, context.ViewData.Model, context.ViewBag, ViewType);
                 
+                var result = await renderEngine.Render(path, context.ViewData.Model, context.ViewBag, ViewType);
+
                 if (ViewType == ViewType.Full)
                 {
                     if (!string.IsNullOrEmpty(result.Redirect))

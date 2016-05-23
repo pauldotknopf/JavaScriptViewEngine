@@ -1,4 +1,6 @@
-﻿namespace JavaScriptViewEngine
+﻿using Microsoft.AspNetCore.Hosting;
+
+namespace JavaScriptViewEngine
 {
     /// <summary>
     /// An <see cref="IRenderEngineBuilder"/> that builds a <see cref="IRenderEngine"/>
@@ -7,10 +9,16 @@
     /// <seealso cref="JavaScriptViewEngine.IRenderEngineBuilder" />
     public class NodeRenderEngineBuilder : IRenderEngineBuilder
     {
+        private readonly IHostingEnvironment _hostingEnvironment;
+
+        public NodeRenderEngineBuilder(IHostingEnvironment hostingEnvironment)
+        {
+            _hostingEnvironment = hostingEnvironment;
+        }
+
         public IRenderEngine Build()
         {
-            // TODO:
-            return new NodeRenderEngine("TODO:");
+            return new NodeRenderEngine(_hostingEnvironment.WebRootPath);
         }
     }
 }

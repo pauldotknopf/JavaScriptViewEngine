@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace JavaScriptViewEngine
 {
@@ -42,16 +43,19 @@ namespace JavaScriptViewEngine
         /// <summary>
         /// The html
         /// </summary>
+        [JsonProperty("html")]
         public string Html { get; set; }
 
         /// <summary>
         /// The response status code. Only used if the ViewType = Full
         /// </summary>
+        [JsonProperty("status")]
         public int Status { get; set; }
 
         /// <summary>
         /// Did the JavaScript engine ask us to redirect the user to another location?
         /// </summary>
+        [JsonProperty("redirect")]
         public string Redirect { get; set; }
     }
 }
