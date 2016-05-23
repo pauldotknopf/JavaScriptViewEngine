@@ -7,13 +7,13 @@ using JavaScriptViewEngine.Exceptions;
 namespace JavaScriptViewEngine.Pool
 {
     /// <summary>
-	/// Handles acquiring JavaScript engines from a shared pool. This class is thread safe.
+	/// Handles acquiring <see cref="IRenderEngine"/> instances from a shared pool. This class is thread safe.
 	/// </summary>
-	public interface IJsPool : IDisposable
+	public interface IRenderEnginePool : IDisposable
     {
         /// <summary>
         /// Gets an engine from the pool. This engine should be returned to the pool via
-        /// <see cref="JsPool.ReturnEngineToPool"/> when you are finished with it.
+        /// <see cref="IRenderEnginePool.ReturnEngineToPool"/> when you are finished with it.
         /// If an engine is free, this method returns immediately with the engine.
         /// If no engines are available but we have not reached <see cref="JsPoolConfig.MaxEngines"/>
         /// yet, creates a new engine. If MaxEngines has been reached, blocks until an engine is
@@ -27,13 +27,13 @@ namespace JavaScriptViewEngine.Pool
         /// <exception cref="JsPoolExhaustedException">
         /// Thrown if no engines are available in the pool within the provided timeout period.
         /// </exception>
-        IJsEngine GetEngine(TimeSpan? timeout = null);
+        IRenderEngine GetEngine(TimeSpan? timeout = null);
 
         /// <summary>
         /// Returns an engine to the pool so it can be reused
         /// </summary>
         /// <param name="engine">Engine to return</param>
-        void ReturnEngineToPool(IJsEngine engine);
+        void ReturnEngineToPool(IRenderEngine engine);
 
         /// <summary>
         /// Gets the total number of engines in this engine pool, including engines that are
@@ -53,7 +53,7 @@ namespace JavaScriptViewEngine.Pool
         /// <param name="repopulateEngines">
         /// If <c>true</c>, a new engine will be created to replace the disposed engine
         /// </param>
-        void DisposeEngine(IJsEngine engine, bool repopulateEngines = true);
+        void DisposeEngine(IRenderEngine engine, bool repopulateEngines = true);
 
         /// <summary>
         /// Disposes all engines in this pool, and creates new engines in their place.

@@ -1,20 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using JavaScriptViewEngine.Exceptions;
 
 namespace JavaScriptViewEngine.Pool
 {
     /// <summary>
-	/// Contains the configuration information for JSPool
+	/// Contains the configuration information for <see cref="IRenderEnginePool" />
 	/// </summary>
-	public class JsPoolOptions
+	public class RenderPoolOptions
 	{
         /// <summary>
-        /// Creates a new JavaScript pool configuration. Default values will be set automatically.
+        /// Creates a new render pool configuration. Default values will be set automatically.
         /// </summary>
-        public JsPoolOptions()
+        public RenderPoolOptions()
         {
             StartEngines = 10;
             MaxEngines = 25;

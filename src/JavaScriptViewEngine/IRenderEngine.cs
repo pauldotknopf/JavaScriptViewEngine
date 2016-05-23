@@ -1,8 +1,24 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace JavaScriptViewEngine
 {
+    /// <summary>
+    /// An abstracted render engine
+    /// </summary>
+    public interface IRenderEngine : IDisposable
+    {
+        /// <summary>
+        /// Perform a render
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="model">The model.</param>
+        /// <param name="viewBag">The view bag.</param>
+        /// <param name="viewType">Type of the view.</param>
+        /// <returns></returns>
+        Task<RenderResult> Render(string path, object model, dynamic viewBag, ViewType viewType);
+    }
+    
     /// <summary>
     /// The type of full being rendered
     /// </summary>
@@ -19,9 +35,9 @@ namespace JavaScriptViewEngine
     }
 
     /// <summary>
-    /// The result of an invocation of a JavaScript engine.
+    /// The render result of a <see cref="IRenderEngine"/>
     /// </summary>
-    public class ViewInvokeResult
+    public class RenderResult
     {
         /// <summary>
         /// The html
@@ -37,21 +53,5 @@ namespace JavaScriptViewEngine
         /// Did the JavaScript engine ask us to redirect the user to another location?
         /// </summary>
         public string Redirect { get; set; }
-    }
-
-    /// <summary>
-    /// The service that actually passes mvc values (model, path, etc) to the javascript engine to render.
-    /// </summary>
-    public interface IJsEngineInvoker
-    {
-        /// <summary>
-        /// Invokes the engine and returns the result of the invocation.
-        /// </summary>
-        /// <param name="engine">The engine.</param>
-        /// <param name="type">The type.</param>
-        /// <param name="path">The path.</param>
-        /// <param name="context">The context.</param>
-        /// <returns></returns>
-        Task<ViewInvokeResult> InvokeEngine(IJsEngine engine, ViewType type, string path, ViewContext context);
     }
 }

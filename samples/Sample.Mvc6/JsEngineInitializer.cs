@@ -1,9 +1,5 @@
 ﻿using JavaScriptViewEngine;
-using Microsoft.AspNet.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Sample.Mvc6
 {
@@ -16,9 +12,10 @@ namespace Sample.Mvc6
             _env = env;
         }
 
-        public void Initialize(IJsEngine engine)
+        public void Initialize(IRenderEngine engine)
         {
-            engine.ExecuteFile(_env.MapPath("server.js"));
+            // TODO:
+            //engine.ExecuteFile(_env.MapPath("server.js"));
         }
     }
 }

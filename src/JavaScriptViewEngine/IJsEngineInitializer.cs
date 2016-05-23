@@ -11,6 +11,6 @@
         /// Initializes the specified engine.
         /// </summary>
         /// <param name="engine">The engine.</param>
-        void Initialize(IJsEngine engine);
+        void Initialize(IRenderEngine engine);
     }
 }

@@ -12,12 +12,12 @@ namespace JavaScriptViewEngine
     public static class Extensions
     {
         /// <summary>
-        /// Added the middlware that creates and disposes a <see cref="IJsEngine"/> for each request
+        /// Added the middlware that creates and disposes a <see cref="IRenderEngine"/> for each request
         /// </summary>
         /// <param name="app">The application.</param>
         public static void UseJsEngine(this IApplicationBuilder app)
         {
-            app.UseMiddleware<JsEngineMiddleware>();
+            app.UseMiddleware<RenderEngineMiddleware>();
         }
 
         /// <summary>
@@ -29,12 +29,11 @@ namespace JavaScriptViewEngine
         {
             services.TryAddEnumerable(ServiceDescriptor.Transient<IConfigureOptions<MvcViewOptions>, JavaScriptViewEngineMvcViewOptionsSetup>());
             services.TryAddTransient<IFileWatcher, FileWatcher>();
-            services.TryAddTransient<IJsPool, JsPool>();
+            services.TryAddTransient<IRenderEnginePool, RenderEnginePool>();
             services.TryAddTransient<IJsEngineInitializer, T>();
-            services.TryAddTransient<IJsEngineBuilder, JsEngineBuilder>();
-            services.TryAddSingleton<IJsEngineFactory, JsEngineFactory>();
+            services.TryAddTransient<IRenderEngineBuilder, NodeRenderEngineBuilder>();
+            services.TryAddSingleton<IRenderEngineFactory, RenderEngineFactory>();
             services.TryAddTransient<IJsViewEngine, JsViewEngine>();
-            services.TryAddTransient<IJsEngineInvoker, JsEngineInvoker>();
         }
 
         /// <summary>

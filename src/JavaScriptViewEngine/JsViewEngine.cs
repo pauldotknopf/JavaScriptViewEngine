@@ -13,20 +13,14 @@ namespace JavaScriptViewEngine
     /// </summary>
     public class JsViewEngine : IJsViewEngine
     {
-        private readonly IJsEngineInvoker _jsEngineInvoker;
         private readonly JsViewEngineOptions _options;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JsViewEngine" /> class.
         /// </summary>
-        /// <param name="jsEngineInvoker">The js engine invoker.</param>
         /// <param name="options">The options.</param>
-        public JsViewEngine(IJsEngineInvoker jsEngineInvoker, IOptions<JsViewEngineOptions> options)
+        public JsViewEngine(IOptions<JsViewEngineOptions> options)
         {
-            if(jsEngineInvoker == null)
-                jsEngineInvoker = new JsEngineInvoker();
-
-            _jsEngineInvoker = jsEngineInvoker;
             _options = options.Value;
         }
         
@@ -38,8 +32,11 @@ namespace JavaScriptViewEngine
 
         public ViewEngineResult GetView(string executingFilePath, string viewPath, bool isMainPage)
         {
-            // TODO: Fix
-            return null;
+            return ViewEngineResult.Found(viewPath, new JsView()
+            {
+                Path = !string.IsNullOrEmpty(_options.ViewNamePrefix) ? viewPath.Substring(_options.ViewNamePrefix.Length) : viewPath,
+                ViewType = ViewType.Full
+            });
         }
 
         /// <summary>
@@ -48,17 +45,6 @@ namespace JavaScriptViewEngine
         /// <seealso cref="IView" />
         public class JsView : IView
         {
-            private readonly IJsEngineInvoker _jsEngineInvoker;
-
-            /// <summary>
-            /// Initializes a new instance of the <see cref="JsView"/> class.
-            /// </summary>
-            /// <param name="jsEngineInvoker">The js engine invoker.</param>
-            public JsView(IJsEngineInvoker jsEngineInvoker)
-            {
-                _jsEngineInvoker = jsEngineInvoker;
-            }
-
             /// <summary>
             /// The path that get's sent to the javascript method.
             /// </summary>
@@ -78,12 +64,21 @@ namespace JavaScriptViewEngine
             /// </returns>
             public async Task RenderAsync(ViewContext context)
             {
-                var jsEngine = context.HttpContext.Request.HttpContext.Items["JsEngine"] as IJsEngine;
+                var renderEngine = context.HttpContext.Request.HttpContext.Items["RenderEngine"] as IRenderEngine;
+                if (renderEngine == null) throw new Exception("Couldn't get IRenderEngine from the context request items.");
 
-                if (jsEngine == null) throw new Exception("Couldn't get IJsEngine from the context request items.");
+                var path = Path;
+                if (string.Equals(path, "{auto}", StringComparison.OrdinalIgnoreCase))
+                {
+                    path = context.HttpContext.Request.Path;
+                    if (context.HttpContext.Request.QueryString.HasValue)
+                    {
+                        path += context.HttpContext.Request.QueryString.Value;
+                    }
+                }
+
+                var result = await renderEngine.Render(path, context.ViewData.Model, context.ViewBag, ViewType);
                 
-                var result = await _jsEngineInvoker.InvokeEngine(jsEngine, ViewType, Path, context);
-
                 if (ViewType == ViewType.Full)
                 {
                     if (!string.IsNullOrEmpty(result.Redirect))
