@@ -1,29 +1,26 @@
 ﻿using JavaScriptViewEngine.Exceptions;
-using Microsoft.Extensions.OptionsModel;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 
 namespace JavaScriptViewEngine.Pool
 {
     /// <summary>
-	/// Handles acquiring JavaScript engines from a shared pool. This class is thread-safe.
+	/// Handles acquiring render engines from a shared pool. This class is thread-safe.
 	/// </summary>
 	[DebuggerDisplay("{DebuggerDisplay,nq}")]
-    public class JsPool : IJsPool
+    public class RenderEnginePool : IRenderEnginePool
     {
         #region Fields
 
-        readonly JsPoolOptions _options;
-        readonly IJsEngineInitializer _jsEngineInitializer;
-        readonly IJsEngineBuilder _jsEngineBuilder;
+        readonly RenderPoolOptions _options;
+        readonly IRenderEngineBuilder _renderEngineBuilder;
         readonly IFileWatcher _fileWatcher;
-        readonly BlockingCollection<IJsEngine> _availableEngines = new BlockingCollection<IJsEngine>();
-        readonly IDictionary<IJsEngine, EngineMetadata> _metadata = new Dictionary<IJsEngine, EngineMetadata>();
+        readonly BlockingCollection<IRenderEngine> _availableEngines = new BlockingCollection<IRenderEngine>();
+        readonly IDictionary<IRenderEngine, EngineMetadata> _metadata = new Dictionary<IRenderEngine, EngineMetadata>();
         int _engineCount;
         readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         readonly object _engineCreationLock = new object();
@@ -33,32 +30,29 @@ namespace JavaScriptViewEngine.Pool
         #region Ctor
 
         /// <summary>
-        /// Creates a new JavaScript engine pool
+        /// Creates a new <see cref="RenderEnginePool"/>
         /// </summary>
-        public JsPool(
-            IOptions<JsPoolOptions> options, 
-            IJsEngineInitializer jsEngineInitializer, 
-            IJsEngineBuilder jsEngineBuilder,
-            IFileWatcher fileWatcher
-            )
+        public RenderEnginePool(
+            IOptions<RenderPoolOptions> options, 
+            IRenderEngineBuilder renderEngineBuilder,
+            IFileWatcher fileWatcher)
         {
             _options = options.Value;
-            _jsEngineInitializer = jsEngineInitializer;
-            _jsEngineBuilder = jsEngineBuilder;
+            _renderEngineBuilder = renderEngineBuilder;
             _fileWatcher = fileWatcher;
             PopulateEngines();
             InitializeWatcher();
         }
 
         #endregion
-        
-        #region IJsPool
+
+        #region IRenderEnginePool
 
         /// <summary>
         /// Gets an engine from the pool. This engine should be returned to the pool via
         /// <see cref="ReturnEngineToPool"/> when you are finished with it.
         /// If an engine is free, this method returns immediately with the engine.
-        /// If no engines are available but we have not reached <see cref="JsPoolOptions.MaxEngines"/>
+        /// If no engines are available but we have not reached <see cref="RenderPoolOptions.MaxEngines"/>
         /// yet, creates a new engine. If MaxEngines has been reached, blocks until an engine is
         /// avaiable again.
         /// </summary>
@@ -66,13 +60,13 @@ namespace JavaScriptViewEngine.Pool
         /// Maximum time to wait for a free engine. If not specified, defaults to the timeout 
         /// specified in the configuration.
         /// </param>
-        /// <returns>A JavaScript engine</returns>
-        /// <exception cref="JsPoolExhaustedException">
+        /// <returns>A render engine</returns>
+        /// <exception cref="RenderPoolExhaustedException">
         /// Thrown if no engines are available in the pool within the provided timeout period.
         /// </exception>
-        public virtual IJsEngine GetEngine(TimeSpan? timeout = null)
+        public virtual IRenderEngine GetEngine(TimeSpan? timeout = null)
         {
-            IJsEngine engine;
+            IRenderEngine engine;
 
             // First see if a pooled engine is immediately available
             if (_availableEngines.TryTake(out engine))
@@ -94,7 +88,7 @@ namespace JavaScriptViewEngine.Pool
 
             // At the limit, so block until one is available
             if (!_availableEngines.TryTake(out engine, timeout ?? _options.GetEngineTimeout))
-                throw new JsPoolExhaustedException($"Could not acquire JavaScript engine within {_options.GetEngineTimeout}");
+                throw new RenderPoolExhaustedException($"Could not acquire render engine within {_options.GetEngineTimeout}");
 
             return TakeEngine(engine);
         }
@@ -103,13 +97,12 @@ namespace JavaScriptViewEngine.Pool
         /// Returns an engine to the pool so it can be reused
         /// </summary>
         /// <param name="engine">Engine to return</param>
-        public virtual void ReturnEngineToPool(IJsEngine engine)
+        public virtual void ReturnEngineToPool(IRenderEngine engine)
         {
             if (!_metadata.ContainsKey(engine))
             {
                 // This engine was from another pool. This could happen if a pool is recycled
-                // and replaced with a different one (like what ReactJS.NET does when any 
-                // loaded files change). Let's just pretend we never saw it.
+                // and replaced with a different one. Let's just pretend we never saw it.
                 engine.Dispose();
                 return;
             }
@@ -122,17 +115,7 @@ namespace JavaScriptViewEngine.Pool
                 DisposeEngine(engine);
                 return;
             }
-
-            // TODO: VroomJs doesn't expose an garbage collection
-            //if (
-            //    _config.GarbageCollectionInterval > 0 &&
-            //    usageCount % _config.GarbageCollectionInterval == 0 &&
-            //    engine.SupportsGarbageCollection()
-            //)
-            //{
-            //    engine.CollectGarbage();
-            //}
-
+            
             _availableEngines.Add(engine);
         }
 
@@ -154,7 +137,7 @@ namespace JavaScriptViewEngine.Pool
         /// <param name="repopulateEngines">
         /// If <c>true</c>, a new engine will be created to replace the disposed engine
         /// </param>
-        public virtual void DisposeEngine(IJsEngine engine, bool repopulateEngines = true)
+        public virtual void DisposeEngine(IRenderEngine engine, bool repopulateEngines = true)
         {
             engine.Dispose();
             _metadata.Remove(engine);
@@ -185,7 +168,7 @@ namespace JavaScriptViewEngine.Pool
         public event EventHandler Recycled;
 
         /// <summary>
-        /// Disposes all the JavaScript engines in this pool.
+        /// Disposes all the render engines in this pool.
         /// </summary>
         public virtual void Dispose()
         {
@@ -214,7 +197,7 @@ namespace JavaScriptViewEngine.Pool
         }
 
         /// <summary>
-        /// Ensures that at least <see cref="JsPoolOptions.StartEngines"/> engines have been created.
+        /// Ensures that at least <see cref="RenderPoolOptions.StartEngines"/> engines have been created.
         /// </summary>
         private void PopulateEngines()
         {
@@ -226,12 +209,11 @@ namespace JavaScriptViewEngine.Pool
         }
 
         /// <summary>
-        /// Creates a new JavaScript engine and adds it to the list of all available engines.
+        /// Creates a new render engine and adds it to the list of all available engines.
         /// </summary>
-        private IJsEngine CreateEngine()
+        private IRenderEngine CreateEngine()
         {
-            var engine = _jsEngineBuilder.Build();
-            _jsEngineInitializer.Initialize(engine);
+            var engine = _renderEngineBuilder.Build();
             _metadata[engine] = new EngineMetadata();
             Interlocked.Increment(ref _engineCount);
             return engine;
@@ -241,7 +223,7 @@ namespace JavaScriptViewEngine.Pool
         /// Marks the specified engine as "in use"
         /// </summary>
         /// <param name="engine"></param>
-        private IJsEngine TakeEngine(IJsEngine engine)
+        private IRenderEngine TakeEngine(IRenderEngine engine)
         {
             _metadata[engine].InUse = true;
             _metadata[engine].UsageCount++;
@@ -255,7 +237,7 @@ namespace JavaScriptViewEngine.Pool
         /// </summary>
         private void DisposeAllEngines()
         {
-            IJsEngine engine;
+            IRenderEngine engine;
             while (_availableEngines.TryTake(out engine))
                 DisposeEngine(engine, false);
 

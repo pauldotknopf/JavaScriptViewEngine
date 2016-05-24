@@ -81,7 +81,7 @@ namespace JavaScriptViewEngine
                 throw new InvalidOperationException("Path must be set first");
             }
 
-            _timer = new Timer(OnTimer);
+            _timer = new Timer(OnTimer, null, Timeout.Infinite, Timeout.Infinite);
             try
             {
                 // Attempt to initialise a FileSystemWatcher so we can recycle the JavaScript
@@ -101,7 +101,7 @@ namespace JavaScriptViewEngine
             catch (Exception ex)
             {
                 // Can't use FileSystemWatcher (eg. not running in Full Trust)
-                Trace.WriteLine("Unable to initialise FileSystemWatcher: " + ex.Message);
+                Debug.WriteLine("Unable to initialise FileSystemWatcher: " + ex.Message);
                 return false;
             }
         }
@@ -149,7 +149,7 @@ namespace JavaScriptViewEngine
                 return;
             }
 
-            Trace.WriteLine($"[JsPool] Watched file '{args.FullPath}' changed");
+            Debug.WriteLine($"[RenderPool] Watched file '{args.FullPath}' changed");
             // Use a timer so multiple changes only result in a single reset.
             _timer.Change(DebounceTimeout, Timeout.Infinite);
         }

@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 namespace JavaScriptViewEngine.Pool
 {
     /// <summary>
-	/// Contains metadata relating to a JavaScript engine.
+	/// Contains metadata relating to a render engine.
 	/// </summary>
 	public class EngineMetadata
     {
         /// <summary>
-        /// Gets or sets whether this JavaScript engine is currently in use.
+        /// Gets or sets whether this render engine is currently in use.
         /// </summary>
         public bool InUse { get; set; }
 

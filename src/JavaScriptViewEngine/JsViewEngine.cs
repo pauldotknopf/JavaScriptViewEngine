@@ -1,97 +1,48 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc.ViewEngines;
-using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Mvc.Rendering;
-using Microsoft.Extensions.OptionsModel;
-using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.Extensions.Options;
 
 namespace JavaScriptViewEngine
 {
     /// <summary>
-    /// The aspnet view engine that will pass the model to a js engine to render the markup.
+    /// The aspnet view engine that will pass the model to a render engine to render the markup.
     /// </summary>
     public class JsViewEngine : IJsViewEngine
     {
-        private readonly IJsEngineInvoker _jsEngineInvoker;
         private readonly JsViewEngineOptions _options;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JsViewEngine" /> class.
         /// </summary>
-        /// <param name="jsEngineInvoker">The js engine invoker.</param>
         /// <param name="options">The options.</param>
-        public JsViewEngine(IJsEngineInvoker jsEngineInvoker, IOptions<JsViewEngineOptions> options)
+        public JsViewEngine(IOptions<JsViewEngineOptions> options)
         {
-            if(jsEngineInvoker == null)
-                jsEngineInvoker = new JsEngineInvoker();
-
-            _jsEngineInvoker = jsEngineInvoker;
             _options = options.Value;
         }
-
-        /// <summary>
-        /// Finds the partial view.
-        /// </summary>
-        /// <param name="context">The context.</param>
-        /// <param name="partialViewName">Partial name of the view.</param>
-        /// <returns></returns>
-        public ViewEngineResult FindPartialView(ActionContext context, string partialViewName)
+        
+        public ViewEngineResult FindView(ActionContext context, string viewName, bool isMainPage)
         {
-            if(string.IsNullOrEmpty(partialViewName))
-                return ViewEngineResult.NotFound(partialViewName, Enumerable.Empty<string>());
-
-            if (!string.IsNullOrEmpty(_options.ViewNamePrefix) && !partialViewName.StartsWith(_options.ViewNamePrefix))
-                return ViewEngineResult.NotFound(partialViewName, Enumerable.Empty<string>());
-
-            return ViewEngineResult.Found(partialViewName, 
-                new JsView(_jsEngineInvoker)
-                {
-                    ViewType = ViewType.Partial,
-                    Path = !string.IsNullOrEmpty(_options.ViewNamePrefix) ? partialViewName.Substring(_options.ViewNamePrefix.Length) : partialViewName
-                });
+            throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Finds the view.
-        /// </summary>
-        /// <param name="context">The context.</param>
-        /// <param name="viewName">Name of the view.</param>
-        /// <returns></returns>
-        public ViewEngineResult FindView(ActionContext context, string viewName)
+        public ViewEngineResult GetView(string executingFilePath, string viewPath, bool isMainPage)
         {
-            if (string.IsNullOrEmpty(viewName))
-                return ViewEngineResult.NotFound(viewName, Enumerable.Empty<string>());
-
-            if (!string.IsNullOrEmpty(_options.ViewNamePrefix) && !viewName.StartsWith(_options.ViewNamePrefix))
-                return ViewEngineResult.NotFound(viewName, Enumerable.Empty<string>());
-
-            return ViewEngineResult.Found(viewName, 
-                new JsView(_jsEngineInvoker)
-                {
-                    ViewType = ViewType.Full,
-                    Path = !string.IsNullOrEmpty(_options.ViewNamePrefix) ? viewName.Substring(_options.ViewNamePrefix.Length) : viewName
-                });
+            return ViewEngineResult.Found(viewPath, new JsView()
+            {
+                Path = !string.IsNullOrEmpty(_options.ViewNamePrefix) ? viewPath.Substring(_options.ViewNamePrefix.Length) : viewPath,
+                ViewType = ViewType.Full
+            });
         }
 
         /// <summary>
         /// The view that invokes a javascript engine with the model, and writes the output to the response.
         /// </summary>
-        /// <seealso cref="Microsoft.AspNet.Mvc.ViewEngines.IView" />
+        /// <seealso cref="IView" />
         public class JsView : IView
         {
-            private readonly IJsEngineInvoker _jsEngineInvoker;
-
-            /// <summary>
-            /// Initializes a new instance of the <see cref="JsView"/> class.
-            /// </summary>
-            /// <param name="jsEngineInvoker">The js engine invoker.</param>
-            public JsView(IJsEngineInvoker jsEngineInvoker)
-            {
-                _jsEngineInvoker = jsEngineInvoker;
-            }
-
             /// <summary>
             /// The path that get's sent to the javascript method.
             /// </summary>
@@ -111,11 +62,28 @@ namespace JavaScriptViewEngine
             /// </returns>
             public async Task RenderAsync(ViewContext context)
             {
-                var jsEngine = context.HttpContext.Request.HttpContext.Items["JsEngine"] as IJsEngine;
-
-                if (jsEngine == null) throw new Exception("Couldn't get IJsEngine from the context request items.");
+                var renderEngine = context.HttpContext.Request.HttpContext.Items["RenderEngine"] as IRenderEngine;
+                if (renderEngine == null) throw new Exception("Couldn't get IRenderEngine from the context request items.");
                 
-                var result = await _jsEngineInvoker.InvokeEngine(jsEngine, ViewType, Path, context);
+                var path = Path;
+                if (string.Equals(path, "{auto}", StringComparison.OrdinalIgnoreCase))
+                {
+                    path = context.HttpContext.Request.Path;
+                    if (context.HttpContext.Request.QueryString.HasValue)
+                    {
+                        path += context.HttpContext.Request.QueryString.Value;
+                    }
+                }
+
+                object areaObject;
+                context.ActionDescriptor.RouteValueDefaults.TryGetValue("area", out areaObject);
+
+                if (areaObject == null)
+                {
+                    areaObject = "default";
+                }
+
+                var result = await renderEngine.Render(path, context.ViewData.Model, context.ViewBag, context.RouteData.Values, areaObject.ToString(), ViewType);
 
                 if (ViewType == ViewType.Full)
                 {

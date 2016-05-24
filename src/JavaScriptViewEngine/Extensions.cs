@@ -1,43 +1,38 @@
 ﻿using JavaScriptViewEngine.Middleware;
-using Microsoft.AspNet.Builder;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using JavaScriptViewEngine.Pool;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.OptionsModel;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Mvc;
 
 namespace JavaScriptViewEngine
 {
     public static class Extensions
     {
         /// <summary>
-        /// Added the middlware that creates and disposes a <see cref="IJsEngine"/> for each request
+        /// Added the middlware that creates and disposes a <see cref="IRenderEngine"/> for each request
         /// </summary>
         /// <param name="app">The application.</param>
         public static void UseJsEngine(this IApplicationBuilder app)
         {
-            app.UseMiddleware<JsEngineMiddleware>();
+            app.UseMiddleware<RenderEngineMiddleware>();
         }
 
         /// <summary>
-        /// Add the services required to use a JavaScript engine, a pool, etc.
+        /// Add the services required to use a render engine, a pool, etc.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="services">The services.</param>
-        public static void AddJsEngine<T>(this IServiceCollection services) where T : class, IJsEngineInitializer
+        public static void AddJsEngine(this IServiceCollection services)
         {
             services.TryAddEnumerable(ServiceDescriptor.Transient<IConfigureOptions<MvcViewOptions>, JavaScriptViewEngineMvcViewOptionsSetup>());
             services.TryAddTransient<IFileWatcher, FileWatcher>();
-            services.TryAddTransient<IJsPool, JsPool>();
-            services.TryAddTransient<IJsEngineInitializer, T>();
-            services.TryAddTransient<IJsEngineBuilder, JsEngineBuilder>();
-            services.TryAddSingleton<IJsEngineFactory, JsEngineFactory>();
+            services.TryAddTransient<IRenderEnginePool, RenderEnginePool>();
+            services.TryAddTransient<IRenderEngineBuilder, NodeRenderEngineBuilder>();
+            services.TryAddSingleton<IRenderEngineFactory, RenderEngineFactory>();
             services.TryAddTransient<IJsViewEngine, JsViewEngine>();
-            services.TryAddTransient<IJsEngineInvoker, JsEngineInvoker>();
         }
 
         /// <summary>

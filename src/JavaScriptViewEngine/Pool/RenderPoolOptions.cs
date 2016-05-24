@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using JavaScriptViewEngine.Exceptions;
 
 namespace JavaScriptViewEngine.Pool
 {
     /// <summary>
-	/// Contains the configuration information for JSPool
+	/// Contains the configuration information for <see cref="IRenderEnginePool" />
 	/// </summary>
-	public class JsPoolOptions
+	public class RenderPoolOptions
 	{
         /// <summary>
-        /// Creates a new JavaScript pool configuration. Default values will be set automatically.
+        /// Creates a new render pool configuration. Default values will be set automatically.
         /// </summary>
-        public JsPoolOptions()
+        public RenderPoolOptions()
         {
             StartEngines = 10;
             MaxEngines = 25;
@@ -39,7 +37,7 @@ namespace JavaScriptViewEngine.Pool
         /// <summary>
         /// Gets or sets the default timeout to use when acquiring an engine from the pool.
         /// If an engine can not be acquired in this timeframe, a 
-        /// <see cref="JsPoolExhaustedException"/> will be thrown.
+        /// <see cref="RenderPoolExhaustedException"/> will be thrown.
         /// </summary>
         public TimeSpan GetEngineTimeout { get; set; }
 
