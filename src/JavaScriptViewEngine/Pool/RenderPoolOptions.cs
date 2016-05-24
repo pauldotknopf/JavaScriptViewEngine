@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using JavaScriptViewEngine.Exceptions;
 
 namespace JavaScriptViewEngine.Pool
 {
@@ -36,7 +37,7 @@ namespace JavaScriptViewEngine.Pool
         /// <summary>
         /// Gets or sets the default timeout to use when acquiring an engine from the pool.
         /// If an engine can not be acquired in this timeframe, a 
-        /// <see cref="JsPoolExhaustedException"/> will be thrown.
+        /// <see cref="RenderPoolExhaustedException"/> will be thrown.
         /// </summary>
         public TimeSpan GetEngineTimeout { get; set; }
 

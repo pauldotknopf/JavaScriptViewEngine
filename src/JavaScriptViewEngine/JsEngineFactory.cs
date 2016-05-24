@@ -1,8 +1,5 @@
 ﻿using JavaScriptViewEngine.Pool;
-using Microsoft.Extensions.PlatformAbstractions;
 using System;
-using System.Collections.Concurrent;
-using System.Threading;
 
 namespace JavaScriptViewEngine
 {

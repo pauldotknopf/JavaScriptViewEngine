@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -14,18 +15,18 @@ namespace JavaScriptViewEngine.Middleware
     public class RenderEngineMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly IRenderEngineFactory _javaScriptEngineFactory;
+        private readonly IRenderEngineFactory _renderEngineFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RenderEngineMiddleware"/> class.
         /// </summary>
         /// <param name="next">The next.</param>
-        /// <param name="javaScriptEngineFactory">The java script engine factory.</param>
+        /// <param name="renderEngineFactory">The render engine factory.</param>
         public RenderEngineMiddleware(RequestDelegate next,
-            IRenderEngineFactory javaScriptEngineFactory)
+            IRenderEngineFactory renderEngineFactory)
         {
             _next = next;
-            _javaScriptEngineFactory = javaScriptEngineFactory;
+            _renderEngineFactory = renderEngineFactory;
         }
 
         /// <summary>
@@ -36,10 +37,10 @@ namespace JavaScriptViewEngine.Middleware
         public async Task Invoke(HttpContext context)
         {
             IRenderEngine engine = null;
-
+            
             try
             {
-                engine = _javaScriptEngineFactory.GetEngine();
+                engine = _renderEngineFactory.GetEngine();
 
                 context.Items["RenderEngine"] = engine;
 
@@ -48,7 +49,7 @@ namespace JavaScriptViewEngine.Middleware
             finally
             {
                 if (engine != null)
-                    _javaScriptEngineFactory.ReturnEngineToPool(engine);
+                    _renderEngineFactory.ReturnEngineToPool(engine);
             }
         }
     }

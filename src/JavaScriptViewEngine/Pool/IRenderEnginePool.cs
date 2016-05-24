@@ -15,7 +15,7 @@ namespace JavaScriptViewEngine.Pool
         /// Gets an engine from the pool. This engine should be returned to the pool via
         /// <see cref="IRenderEnginePool.ReturnEngineToPool"/> when you are finished with it.
         /// If an engine is free, this method returns immediately with the engine.
-        /// If no engines are available but we have not reached <see cref="JsPoolConfig.MaxEngines"/>
+        /// If no engines are available but we have not reached <see cref="RenderPoolOptions.MaxEngines"/>
         /// yet, creates a new engine. If MaxEngines has been reached, blocks until an engine is
         /// avaiable again.
         /// </summary>
@@ -23,8 +23,8 @@ namespace JavaScriptViewEngine.Pool
         /// Maximum time to wait for a free engine. If not specified, defaults to the timeout 
         /// specified in the configuration.
         /// </param>
-        /// <returns>A JavaScript engine</returns>
-        /// <exception cref="JsPoolExhaustedException">
+        /// <returns>A render engine</returns>
+        /// <exception cref="RenderPoolExhaustedException">
         /// Thrown if no engines are available in the pool within the provided timeout period.
         /// </exception>
         IRenderEngine GetEngine(TimeSpan? timeout = null);

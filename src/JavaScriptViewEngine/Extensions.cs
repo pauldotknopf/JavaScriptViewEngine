@@ -21,16 +21,15 @@ namespace JavaScriptViewEngine
         }
 
         /// <summary>
-        /// Add the services required to use a JavaScript engine, a pool, etc.
+        /// Add the services required to use a render engine, a pool, etc.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="services">The services.</param>
-        public static void AddJsEngine<T>(this IServiceCollection services) where T : class, IJsEngineInitializer
+        public static void AddJsEngine(this IServiceCollection services)
         {
             services.TryAddEnumerable(ServiceDescriptor.Transient<IConfigureOptions<MvcViewOptions>, JavaScriptViewEngineMvcViewOptionsSetup>());
             services.TryAddTransient<IFileWatcher, FileWatcher>();
             services.TryAddTransient<IRenderEnginePool, RenderEnginePool>();
-            services.TryAddTransient<IJsEngineInitializer, T>();
             services.TryAddTransient<IRenderEngineBuilder, NodeRenderEngineBuilder>();
             services.TryAddSingleton<IRenderEngineFactory, RenderEngineFactory>();
             services.TryAddTransient<IJsViewEngine, JsViewEngine>();

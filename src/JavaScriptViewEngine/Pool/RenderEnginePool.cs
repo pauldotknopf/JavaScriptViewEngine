@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 namespace JavaScriptViewEngine.Pool
 {
     /// <summary>
-	/// Handles acquiring JavaScript engines from a shared pool. This class is thread-safe.
+	/// Handles acquiring render engines from a shared pool. This class is thread-safe.
 	/// </summary>
 	[DebuggerDisplay("{DebuggerDisplay,nq}")]
     public class RenderEnginePool : IRenderEnginePool
@@ -35,8 +35,7 @@ namespace JavaScriptViewEngine.Pool
         public RenderEnginePool(
             IOptions<RenderPoolOptions> options, 
             IRenderEngineBuilder renderEngineBuilder,
-            IFileWatcher fileWatcher
-            )
+            IFileWatcher fileWatcher)
         {
             _options = options.Value;
             _renderEngineBuilder = renderEngineBuilder;
@@ -46,14 +45,14 @@ namespace JavaScriptViewEngine.Pool
         }
 
         #endregion
-        
-        #region IJsPool
+
+        #region IRenderEnginePool
 
         /// <summary>
         /// Gets an engine from the pool. This engine should be returned to the pool via
         /// <see cref="ReturnEngineToPool"/> when you are finished with it.
         /// If an engine is free, this method returns immediately with the engine.
-        /// If no engines are available but we have not reached <see cref="JsPoolOptions.MaxEngines"/>
+        /// If no engines are available but we have not reached <see cref="RenderPoolOptions.MaxEngines"/>
         /// yet, creates a new engine. If MaxEngines has been reached, blocks until an engine is
         /// avaiable again.
         /// </summary>
@@ -61,8 +60,8 @@ namespace JavaScriptViewEngine.Pool
         /// Maximum time to wait for a free engine. If not specified, defaults to the timeout 
         /// specified in the configuration.
         /// </param>
-        /// <returns>A JavaScript engine</returns>
-        /// <exception cref="JsPoolExhaustedException">
+        /// <returns>A render engine</returns>
+        /// <exception cref="RenderPoolExhaustedException">
         /// Thrown if no engines are available in the pool within the provided timeout period.
         /// </exception>
         public virtual IRenderEngine GetEngine(TimeSpan? timeout = null)
@@ -89,7 +88,7 @@ namespace JavaScriptViewEngine.Pool
 
             // At the limit, so block until one is available
             if (!_availableEngines.TryTake(out engine, timeout ?? _options.GetEngineTimeout))
-                throw new JsPoolExhaustedException($"Could not acquire JavaScript engine within {_options.GetEngineTimeout}");
+                throw new RenderPoolExhaustedException($"Could not acquire render engine within {_options.GetEngineTimeout}");
 
             return TakeEngine(engine);
         }
@@ -103,8 +102,7 @@ namespace JavaScriptViewEngine.Pool
             if (!_metadata.ContainsKey(engine))
             {
                 // This engine was from another pool. This could happen if a pool is recycled
-                // and replaced with a different one (like what ReactJS.NET does when any 
-                // loaded files change). Let's just pretend we never saw it.
+                // and replaced with a different one. Let's just pretend we never saw it.
                 engine.Dispose();
                 return;
             }
@@ -170,7 +168,7 @@ namespace JavaScriptViewEngine.Pool
         public event EventHandler Recycled;
 
         /// <summary>
-        /// Disposes all the JavaScript engines in this pool.
+        /// Disposes all the render engines in this pool.
         /// </summary>
         public virtual void Dispose()
         {
@@ -199,7 +197,7 @@ namespace JavaScriptViewEngine.Pool
         }
 
         /// <summary>
-        /// Ensures that at least <see cref="JsPoolOptions.StartEngines"/> engines have been created.
+        /// Ensures that at least <see cref="RenderPoolOptions.StartEngines"/> engines have been created.
         /// </summary>
         private void PopulateEngines()
         {
@@ -211,7 +209,7 @@ namespace JavaScriptViewEngine.Pool
         }
 
         /// <summary>
-        /// Creates a new JavaScript engine and adds it to the list of all available engines.
+        /// Creates a new render engine and adds it to the list of all available engines.
         /// </summary>
         private IRenderEngine CreateEngine()
         {

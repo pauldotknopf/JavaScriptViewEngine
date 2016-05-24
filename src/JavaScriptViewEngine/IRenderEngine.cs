@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Routing;
 using Newtonsoft.Json;
 
 namespace JavaScriptViewEngine
@@ -15,9 +16,11 @@ namespace JavaScriptViewEngine
         /// <param name="path">The path.</param>
         /// <param name="model">The model.</param>
         /// <param name="viewBag">The view bag.</param>
+        /// <param name="routeValues">The route values.</param>
+        /// <param name="area">The area.</param>
         /// <param name="viewType">Type of the view.</param>
         /// <returns></returns>
-        Task<RenderResult> Render(string path, object model, dynamic viewBag, ViewType viewType);
+        Task<RenderResult> Render(string path, object model, dynamic viewBag, RouteValueDictionary routeValues, string area, ViewType viewType);
     }
     
     /// <summary>

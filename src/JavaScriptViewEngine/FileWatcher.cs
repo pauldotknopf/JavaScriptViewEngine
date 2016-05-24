@@ -149,7 +149,7 @@ namespace JavaScriptViewEngine
                 return;
             }
 
-            Debug.WriteLine($"[JsPool] Watched file '{args.FullPath}' changed");
+            Debug.WriteLine($"[RenderPool] Watched file '{args.FullPath}' changed");
             // Use a timer so multiple changes only result in a single reset.
             _timer.Change(DebounceTimeout, Timeout.Infinite);
         }
