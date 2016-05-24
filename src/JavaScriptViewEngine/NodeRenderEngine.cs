@@ -20,9 +20,7 @@ namespace JavaScriptViewEngine
         {
             _nodeServices = Configuration.CreateNodeServices(new NodeServicesOptions
             {
-                // Temporary, we want to use HTTP, but RC2 has perf issues.
-                // https://github.com/aspnet/JavaScriptServices/issues/92
-                HostingModel = NodeHostingModel.InputOutputStream,
+                HostingModel = NodeHostingModel.Http,
                 ProjectPath = projectDirectory
             });
         }
@@ -43,7 +41,8 @@ namespace JavaScriptViewEngine
                 viewType == ViewType.Full ? "renderView" : "renderPartialView",
                 path,
                 model,
-                viewBag);
+                viewBag,
+                routeValues);
         }
 
         /// <summary>
