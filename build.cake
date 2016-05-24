@@ -11,14 +11,14 @@ var configuration = Argument("configuration", "Release");
 // PREPARATION
 //////////////////////////////////////////////////////////////////////
 
-var buildNumber=1;
+var buildNumber=0;
 var baseDir=System.IO.Directory.GetCurrentDirectory();
 var buildDir=System.IO.Path.Combine(baseDir, "build");
 var distDir=System.IO.Path.Combine(baseDir, "dist");
 var isRunningOnAppVeyor = AppVeyor.IsRunningOnAppVeyor;
 if(isRunningOnAppVeyor)
     buildNumber = AppVeyor.Environment.Build.Number;
-System.Environment.SetEnvironmentVariable("DNX_BUILD_VERSION", "beta-" + buildNumber.ToString(), System.EnvironmentVariableTarget.Process);
+System.Environment.SetEnvironmentVariable("DNX_BUILD_VERSION", buildNumber.ToString(), System.EnvironmentVariableTarget.Process);
 
 //////////////////////////////////////////////////////////////////////
 // TASKS
@@ -27,8 +27,7 @@ System.Environment.SetEnvironmentVariable("DNX_BUILD_VERSION", "beta-" + buildNu
 Task("EnsureDependencies")
     .Does(() =>
 {
-    EnsureTool("dnx", "--version");
-    EnsureTool("dnu", "--version");
+    EnsureTool("dotnet", "--version");
 });
 
 Task("Clean")
@@ -41,8 +40,8 @@ Task("Clean")
 Task("Build")
     .Does(() =>
 {
-    ExecuteCommand("dnu restore");
-    ExecuteCommand(string.Format("dnu publish \"src/JavaScriptViewEngine/project.json\" --configuration \"{0}\" --no-source -o \"{1}\"", configuration, System.IO.Path.Combine(buildDir, "JavaScriptViewEngine")));
+    ExecuteCommand("dotnet restore");
+    ExecuteCommand(string.Format("dotnet publish \"src/JavaScriptViewEngine/project.json\" --configuration \"{0}\" -o \"{1}\"", configuration, System.IO.Path.Combine(buildDir, "JavaScriptViewEngine")));
 });
 
 Task("Test")
@@ -58,12 +57,7 @@ Task("Deploy")
     if(!DirectoryExists(distDir))
         CreateDirectory(distDir);
 
-    var destination =  System.IO.Path.Combine(distDir, "JavaScriptViewEngine");
-
-    if(!DirectoryExists(destination))
-        CreateDirectory(destination);
-
-    CopyDirectory(System.IO.Path.Combine(buildDir, "JavaScriptViewEngine"), destination);
+    ExecuteCommand(string.Format("dotnet pack \"src/JavaScriptViewEngine/project.json\" --configuration \"{0}\" -o \"{1}\"", configuration, distDir));
 });
 
 //////////////////////////////////////////////////////////////////////

@@ -1,7 +1,13 @@
 {
-  "version": "1.0.0-*",
+  "version": "1.2.0-*",
   "title": "JavaScriptViewEngine",
   "description": "An ASP.NET ViewEngine that uses javscript to render markup (for universal rendering).",
+  "packOptions": {
+    "summary": "An ASP.NET ViewEngine that uses javscript to render markup (for universal rendering)",
+    "tags": [ "JavaScript", "aspnet", "mvc", "viewengine" ],
+    "projectUrl": "https://github.com/pauldotknopf/JavaScriptViewEngine",
+    "licenseUrl": "https://github.com/pauldotknopf/JavaScriptViewEngine/blob/master/LICENSE"
+  },
   "authors": [ "Paul" ],
   "copyright": "2016",
 
