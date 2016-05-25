@@ -10,18 +10,20 @@ namespace JavaScriptViewEngine
     /// <seealso cref="IRenderEngine" />
     public class NodeRenderEngine : IRenderEngine
     {
+        private readonly NodeRenderEngineOptions _options;
         private INodeServices _nodeServices;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NodeRenderEngine"/> class.
+        /// Initializes a new instance of the <see cref="NodeRenderEngine" /> class.
         /// </summary>
-        /// <param name="projectDirectory">The project directory.</param>
-        public NodeRenderEngine(string projectDirectory)
+        /// <param name="options">The options.</param>
+        public NodeRenderEngine(NodeRenderEngineOptions options)
         {
+            _options = options;
             _nodeServices = Configuration.CreateNodeServices(new NodeServicesOptions
             {
                 HostingModel = NodeHostingModel.Http,
-                ProjectPath = projectDirectory
+                ProjectPath = options.ProjectDirectory
             });
         }
 
@@ -37,6 +39,9 @@ namespace JavaScriptViewEngine
         /// <returns></returns>
         public Task<RenderResult> Render(string path, object model, dynamic viewBag, RouteValueDictionary routeValues, string area, ViewType viewType)
         {
+            if (_options.GetArea != null)
+                area = _options.GetArea(area);
+
             return _nodeServices.InvokeExport<RenderResult>(area,
                 viewType == ViewType.Full ? "renderView" : "renderPartialView",
                 path,

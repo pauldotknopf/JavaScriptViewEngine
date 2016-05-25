@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace JavaScriptViewEngine
 {
@@ -9,16 +10,18 @@ namespace JavaScriptViewEngine
     /// <seealso cref="JavaScriptViewEngine.IRenderEngineBuilder" />
     public class NodeRenderEngineBuilder : IRenderEngineBuilder
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly NodeRenderEngineOptions _options;
 
-        public NodeRenderEngineBuilder(IHostingEnvironment hostingEnvironment)
+        public NodeRenderEngineBuilder(IHostingEnvironment hostingEnvironment, IOptions<NodeRenderEngineOptions> options)
         {
-            _hostingEnvironment = hostingEnvironment;
+            _options = options.Value;
+            if (string.IsNullOrEmpty(_options.ProjectDirectory))
+                _options.ProjectDirectory = hostingEnvironment.WebRootPath;
         }
 
         public IRenderEngine Build()
         {
-            return new NodeRenderEngine(_hostingEnvironment.WebRootPath);
+            return new NodeRenderEngine(_options);
         }
     }
 }
