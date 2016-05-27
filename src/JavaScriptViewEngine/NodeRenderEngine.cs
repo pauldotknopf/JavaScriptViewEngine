@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.NodeServices;
+using JavaScriptViewEngine.Utils;
 #if DOTNETCORE
 using Microsoft.AspNetCore.Routing;
 #else
@@ -66,17 +67,7 @@ namespace JavaScriptViewEngine
         /// <returns></returns>
         public RenderResult Render(string path, object model, dynamic viewBag, RouteValueDictionary routeValues, string area, ViewType viewType)
         {
-            RenderResult result = null;
-
-            var task = Task.Factory.StartNew(() =>
-            {
-                var inner = RenderAsync(path, model, viewBag, routeValues, area, viewType);
-                inner.Wait();
-                result = inner.Result;
-            });
-            task.Wait();
-
-            return result;
+            return AsyncHelpers.RunSync<RenderResult>(() => RenderAsync(path, model, viewBag, routeValues, area, viewType));
         }
 
         /// <summary>
