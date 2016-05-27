@@ -1,9 +1,16 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
+#if DOTNETCORE
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
+#else
+using System.Web.Mvc;
+#endif
+#if DI
 using Microsoft.Extensions.Options;
+#endif
 
 namespace JavaScriptViewEngine
 {
@@ -22,7 +29,9 @@ namespace JavaScriptViewEngine
         {
             _options = options.Value;
         }
-        
+
+        #if DOTNETCORE
+
         public ViewEngineResult FindView(ActionContext context, string viewName, bool isMainPage)
         {
             throw new NotImplementedException();
@@ -37,9 +46,29 @@ namespace JavaScriptViewEngine
             });
         }
 
+        #else
+
+        public ViewEngineResult FindPartialView(ControllerContext controllerContext, string partialViewName, bool useCache)
+        {
+            return null;
+        }
+
+        public ViewEngineResult FindView(ControllerContext controllerContext, string viewName, string masterName, bool useCache)
+        {
+            return null;
+        }
+        
+        public void ReleaseView(ControllerContext controllerContext, IView view)
+        {
+
+        }
+
+        #endif
+
         /// <summary>
         /// The view that invokes a javascript engine with the model, and writes the output to the response.
         /// </summary>
+        /// <seealso cref="System.Web.Mvc.IView" />
         /// <seealso cref="IView" />
         public class JsView : IView
         {
@@ -53,13 +82,8 @@ namespace JavaScriptViewEngine
             /// </summary>
             public ViewType ViewType { get; set; }
 
-            /// <summary>
-            /// Asynchronously renders the view using the specified <paramref name="context" />.
-            /// </summary>
-            /// <param name="context">The <see cref="T:Microsoft.AspNet.Mvc.Rendering.ViewContext" />.</param>
-            /// <returns>
-            /// A <see cref="T:System.Threading.Tasks.Task" /> that on completion renders the view.
-            /// </returns>
+            #if DOTNETCORE
+            
             public async Task RenderAsync(ViewContext context)
             {
                 var renderEngine = context.HttpContext.Request.HttpContext.Items["RenderEngine"] as IRenderEngine;
@@ -100,6 +124,52 @@ namespace JavaScriptViewEngine
                     await context.Writer.WriteAsync(result.Html);   
                 }
             }
+
+            #else
+            
+            public async void Render(ViewContext viewContext, TextWriter writer)
+            {
+                var renderEngine = viewContext.HttpContext.Items["RenderEngine"] as IRenderEngine;
+                if (renderEngine == null) throw new Exception("Couldn't get IRenderEngine from the context request items.");
+
+                var path = Path;
+                if (string.Equals(path, "{auto}", StringComparison.OrdinalIgnoreCase))
+                {
+                    path = viewContext.HttpContext.Request.Path;
+                    if (viewContext.HttpContext.Request.QueryString != null && viewContext.HttpContext.Request.QueryString.Count > 0)
+                    {
+                        throw new Exception("TODO");
+                        //path += context.HttpContext.Request.QueryString.Value;
+                    }
+                }
+
+                object areaObject;
+                viewContext.RouteData.Values.TryGetValue("area", out areaObject);
+
+                if (areaObject == null)
+                {
+                    areaObject = "default";
+                }
+
+                var result = await renderEngine.Render(path, viewContext.ViewData.Model, viewContext.ViewBag, viewContext.RouteData.Values, areaObject.ToString(), ViewType);
+
+                if (ViewType == ViewType.Full)
+                {
+                    if (!string.IsNullOrEmpty(result.Redirect))
+                    {
+                        viewContext.HttpContext.Response.Redirect(result.Redirect);
+                        return;
+                    }
+                    viewContext.HttpContext.Response.StatusCode = result.Status;
+                    await writer.WriteAsync(result.Html);
+                }
+                else
+                {
+                    await writer.WriteAsync(result.Html);
+                }
+            }
+
+            #endif
         }
     }
 }

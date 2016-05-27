@@ -1,6 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.NodeServices;
+#if DOTNETCORE
 using Microsoft.AspNetCore.Routing;
+#else
+using System.Web.Routing;
+#endif
 
 namespace JavaScriptViewEngine
 {

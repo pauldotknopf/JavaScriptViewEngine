@@ -1,6 +1,7 @@
+#if DI
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.AspNetCore.Hosting;
+#endif
 
 namespace Microsoft.AspNetCore.NodeServices {
     public static class Configuration {
@@ -9,6 +10,8 @@ namespace Microsoft.AspNetCore.NodeServices {
             HostingModel = NodeHostingModel.Http,
             WatchFileExtensions = defaultWatchFileExtensions
         };
+
+        #if DI
 
         public static void AddNodeServices(this IServiceCollection serviceCollection) {
             AddNodeServices(serviceCollection, defaultOptions);
@@ -23,6 +26,8 @@ namespace Microsoft.AspNetCore.NodeServices {
                 return CreateNodeServices(options);
             });
         }
+
+        #endif
 
         public static INodeServices CreateNodeServices(NodeServicesOptions options)
         {
