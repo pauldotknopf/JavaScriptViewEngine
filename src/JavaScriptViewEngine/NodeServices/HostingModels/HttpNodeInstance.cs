@@ -10,8 +10,9 @@ using Newtonsoft.Json.Serialization;
 namespace Microsoft.AspNetCore.NodeServices {
 	internal class HttpNodeInstance : OutOfProcessNodeInstance {
         private readonly static Regex PortMessageRegex = new Regex(@"^\[Microsoft.AspNetCore.NodeServices.HttpNodeHost:Listening on port (\d+)\]$");
+        private HttpClient _client;
 
-		private readonly static JsonSerializerSettings jsonSerializerSettings =  new JsonSerializerSettings {
+        private readonly static JsonSerializerSettings jsonSerializerSettings =  new JsonSerializerSettings {
             ContractResolver = new CamelCasePropertyNamesContractResolver()
         };
 
@@ -20,6 +21,7 @@ namespace Microsoft.AspNetCore.NodeServices {
 		public HttpNodeInstance(string projectPath, int port = 0, string[] watchFileExtensions = null)
             : base(EmbeddedResourceReader.Read(typeof(HttpNodeInstance), "/NodeServices/Content/Node/entrypoint-http.js"), projectPath, MakeCommandLineOptions(port, watchFileExtensions))
         {
+            _client = new HttpClient();
 		}
 
         private static string MakeCommandLineOptions(int port, string[] watchFileExtensions) {
@@ -32,26 +34,24 @@ namespace Microsoft.AspNetCore.NodeServices {
 
         public override async Task<T> Invoke<T>(NodeInvocationInfo invocationInfo) {
             await this.EnsureReady();
+            
+            // TODO: Use System.Net.Http.Formatting (PostAsJsonAsync etc.)
+            var payloadJson = JsonConvert.SerializeObject(invocationInfo, jsonSerializerSettings);
+            var payload = new StringContent(payloadJson, Encoding.UTF8, "application/json");
+            var response = await _client.PostAsync("http://localhost:" + this._portNumber, payload);
+            var responseString = await response.Content.ReadAsStringAsync();
 
-            using (var client = new HttpClient()) {
-                // TODO: Use System.Net.Http.Formatting (PostAsJsonAsync etc.)
-                var payloadJson = JsonConvert.SerializeObject(invocationInfo, jsonSerializerSettings);
-                var payload = new StringContent(payloadJson, Encoding.UTF8, "application/json");
-                var response = await client.PostAsync("http://localhost:" + this._portNumber, payload);
-                var responseString = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode) {
+                throw new Exception("Call to Node module failed with error: " + responseString);
+            }
 
-                if (!response.IsSuccessStatusCode) {
-                    throw new Exception("Call to Node module failed with error: " + responseString);
-                }
-
-                var responseIsJson = response.Content.Headers.ContentType.MediaType == "application/json";
-                if (responseIsJson) {
-                    return JsonConvert.DeserializeObject<T>(responseString);
-                } else if (typeof(T) != typeof(string)) {
-                    throw new System.ArgumentException("Node module responded with non-JSON string. This cannot be converted to the requested generic type: " + typeof(T).FullName);
-                } else {
-                    return (T)(object)responseString;
-                }
+            var responseIsJson = response.Content.Headers.ContentType.MediaType == "application/json";
+            if (responseIsJson) {
+                return JsonConvert.DeserializeObject<T>(responseString);
+            } else if (typeof(T) != typeof(string)) {
+                throw new System.ArgumentException("Node module responded with non-JSON string. This cannot be converted to the requested generic type: " + typeof(T).FullName);
+            } else {
+                return (T)(object)responseString;
             }
         }
 
@@ -67,6 +67,17 @@ namespace Microsoft.AspNetCore.NodeServices {
         protected override void OnBeforeLaunchProcess() {
             // Prepare to receive a new port number
             this._portNumber = 0;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing) {
+                if (_client != null) {
+                    _client.Dispose();
+                    _client = null;
+                }
+            }
+            base.Dispose(disposing);
         }
     }
 }
