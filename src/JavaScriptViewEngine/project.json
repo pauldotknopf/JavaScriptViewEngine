@@ -51,7 +51,8 @@
         "Newtonsoft.Json": "8.0.3",
         "Microsoft.AspNet.Mvc": "5.2.3",
         "Owin": "1.0.0",
-        "Microsoft.Owin": "3.0.1"
+        "Microsoft.Owin": "3.0.1",
+        "Microsoft.Owin.Host.SystemWeb": "3.0.1"
       },
       "buildOptions": {
         "define": [ "DOTNET45" ]

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 #else
 using System.Web.Mvc;
+using System.Web;
 #endif
 #if DI
 using Microsoft.Extensions.Options;
@@ -50,12 +51,20 @@ namespace JavaScriptViewEngine
 
         public ViewEngineResult FindPartialView(ControllerContext controllerContext, string partialViewName, bool useCache)
         {
-            return null;
+            return new ViewEngineResult(new JsView()
+            {
+                Path = !string.IsNullOrEmpty(_options.ViewNamePrefix) ? partialViewName.Substring(_options.ViewNamePrefix.Length) : partialViewName,
+                ViewType = ViewType.Partial
+            }, this);
         }
 
         public ViewEngineResult FindView(ControllerContext controllerContext, string viewName, string masterName, bool useCache)
         {
-            return null;
+            return new ViewEngineResult(new JsView()
+            {
+                Path = !string.IsNullOrEmpty(_options.ViewNamePrefix) ? viewName.Substring(_options.ViewNamePrefix.Length) : viewName,
+                ViewType = ViewType.Full
+            }, this);
         }
         
         public void ReleaseView(ControllerContext controllerContext, IView view)
@@ -127,9 +136,9 @@ namespace JavaScriptViewEngine
 
             #else
             
-            public async void Render(ViewContext viewContext, TextWriter writer)
+            public void Render(ViewContext viewContext, TextWriter writer)
             {
-                var renderEngine = viewContext.HttpContext.Items["RenderEngine"] as IRenderEngine;
+                var renderEngine = viewContext.HttpContext.Request.GetOwinContext().Get<IRenderEngine>("RenderEngine");
                 if (renderEngine == null) throw new Exception("Couldn't get IRenderEngine from the context request items.");
 
                 var path = Path;
@@ -138,8 +147,7 @@ namespace JavaScriptViewEngine
                     path = viewContext.HttpContext.Request.Path;
                     if (viewContext.HttpContext.Request.QueryString != null && viewContext.HttpContext.Request.QueryString.Count > 0)
                     {
-                        throw new Exception("TODO");
-                        //path += context.HttpContext.Request.QueryString.Value;
+                        path += "?" + viewContext.HttpContext.Request.QueryString.ToString();
                     }
                 }
 
@@ -151,7 +159,7 @@ namespace JavaScriptViewEngine
                     areaObject = "default";
                 }
 
-                var result = await renderEngine.Render(path, viewContext.ViewData.Model, viewContext.ViewBag, viewContext.RouteData.Values, areaObject.ToString(), ViewType);
+                var result = renderEngine.Render(path, viewContext.ViewData.Model, viewContext.ViewBag, viewContext.RouteData.Values, areaObject.ToString(), ViewType);
 
                 if (ViewType == ViewType.Full)
                 {
@@ -161,11 +169,11 @@ namespace JavaScriptViewEngine
                         return;
                     }
                     viewContext.HttpContext.Response.StatusCode = result.Status;
-                    await writer.WriteAsync(result.Html);
+                    writer.Write(result.Html);
                 }
                 else
                 {
-                    await writer.WriteAsync(result.Html);
+                     writer.Write(result.Html);
                 }
             }
 
