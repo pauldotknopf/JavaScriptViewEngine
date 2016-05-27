@@ -13,26 +13,22 @@ There were existing projects out there that allowed us to render javascript. All
     - Supports ASP.NET 5 (ASP.NET Core 1)
     - .NET Core (Windows/Linux/Mac)
   - cons
-    - Bad performance, local node.exe (with REST endpoints)
+    - Too much .NET integration than what is needed
+    - Razor is required
 - React.NET - https://github.com/reactjs/React.NET
   - pros
     - Embedded javascript engine
     - Fast
   - cons
     - Narrow focus (only React, not Angular)
+    - Limited support for libraries
     - Opinionated
     - No .NET Core support.
 
-JavaScriptViewEngine solves the cons by:
-- ~~Bad performance, local node.exe (with REST endpoints)~~ Using a custom VroomJs implementation that is embedded into the process.
-- ~~Narrow focus (only React, not Angular)~~ This is just a simple view engine. You can do anything with it.
-- ~~Opinionated~~ Again, just a view engine. The React and Angular start templates (TBD) are just that, starter templates. No opinions. Just low friction server-side javascript, exactly how you want it (gulp/grunt/webpack/browserify/babel/etc/etc).
-- ~~No .NET Core support.~~ Using a custom VroomJs implementation that uses the ```project.json``` format, we can ran this on .NET Core.
-
 **TO BE DONE**
-- [ ] Fix ```dnxcore50``` support in the VroomJs dependency. It has many peices that need to be ```#ifdef```'d or updated to use the newer .NET API.
+- [X] Fix ```dnxcore50``` support in the VroomJs dependency. It has many peices that need to be ```#ifdef```'d or updated to use the newer .NET API.
 - [ ] Support older versions of MVC. The older versions aren't really conducive to *gulp*y environments, but it is nice to have the support there in case anybody needs it.
-- [ ] Create "starter-kits" for getting started with both React and Angular.
+- [-] Create "starter-kits" for getting started with both ~~React~~ (done, [react-aspnet-boilerplate](react-aspnet-boilerplate)) and Angular.
 
 # In a nutshell
 
@@ -43,53 +39,55 @@ Getting started is pretty simple.
 ```c#
 public class Startup
 {
-    public Startup()
+    private readonly IHostingEnvironment _env;
+
+    public Startup(IHostingEnvironment env)
     {
-        ...
-        VroomJs.AssemblyLoader.EnsureLoaded();
-        ...
+        _env = env;
     }
         
     public void ConfigureServices(IServiceCollection services)
     {
-        ...
+        services.AddJsEngine();
+        services.Configure<RenderPoolOptions>(options =>
+        {
+            options.WatchPath = _env.WebRootPath;
+            options.WatchFiles = new List<string>
+            {
+                Path.Combine(options.WatchPath, "default.js")
+            };
+        });
         services.AddMvc();
-        services.AddJsEngine<CustomEngineInitializer>();
-        ...
     }
-        
-    public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
-    {
-        ...
-        app.UseJsEngine(); // this needs to be before MVC
 
+    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+    public void Configure(IApplicationBuilder app)
+    {
+        app.UseJsEngine(); // this needs to be before MVC
+            
         app.UseMvc(routes =>
         {
-            routes.MapRoute(
-                name: "default",
-                template: "{controller=Home}/{action=Index}/{id?}");
+            routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
         });
-        ...
     }
 }
 ```
-3. Create an ```IJsEngineInitializer``` that will populate each engine with the runtime needed to render your data.
-```c#
-public class JsEngineInitializer : IJsEngineInitializer
-{
-    public void Initialize(IJsEngine engine)
-    {
-        engine.Execute(@"
-            var RenderView = function(path, model) {
-                return ""<html><head></head><body><strong>"" + model.Greeting + ""</strong ></body>"";
-            };
-
-            var RenderPartialView = function(path, model) {
-                return ""<div><strong>"" + model.Greeting + ""</strong></div>"";
-            };
-        ");
+3. Create ```default.js``` in your ```WebRootPath``` that will be invoked when rendering.
+```javascript
+module.exports = {
+    renderView: function (callback, path, model, viewBag, routeValues) {
+        callback(null, {
+            html: "<html><head></head><body><p><strong>Model:</strong> " + JSON.stringify(model) + "</p><p><strong>ViewBag:</strong> " + JSON.stringify(viewBag) + "</p></body>",
+            status: 200,
+            redirect: null
+        });
+    },
+    renderPartialView: function (callback, path, model, viewBag, routeValues) {
+        callback(null, {
+            html: "<p><strong>Model:</strong> " + JSON.stringify(model) + "</p><p><strong>ViewBag:</strong> " + JSON.stringify(viewBag) + "</p>"
+        });
     }
-}
+};
 ```
 4. Get rolling in MVC.
 ```c#
