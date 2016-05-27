@@ -56,7 +56,7 @@ namespace JavaScriptViewEngine.Middleware
         }
     }
 
-    #else
+#else
 
     /// <summary>
     /// The middleware that adds a <see cref="IRenderEngine"/> to the request items
@@ -79,9 +79,15 @@ namespace JavaScriptViewEngine.Middleware
 
             try
             {
+                object tmp;
+                context.Environment.TryGetValue("System.Web.HttpContextBase", out tmp);
+                var httpContextBase = tmp as System.Web.HttpContextBase;         
+                if(httpContextBase == null)
+                    throw new System.Exception("This middleware is currently only works with Microsoft.Owin.Host.SystemWeb.");
+
                 engine = _renderEngineFactory.GetEngine();
 
-                context.Request.Set("RenderEngine", engine);
+                httpContextBase.Items["RenderEngine"] = engine;
 
                 if(Next != null)
                     await Next.Invoke(context);
@@ -94,5 +100,5 @@ namespace JavaScriptViewEngine.Middleware
         }
     }
     
-    #endif
+#endif
 }

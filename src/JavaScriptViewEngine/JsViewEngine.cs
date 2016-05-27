@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 #else
 using System.Web.Mvc;
-using System.Web;
 #endif
 #if DI
 using Microsoft.Extensions.Options;
@@ -138,7 +137,7 @@ namespace JavaScriptViewEngine
             
             public void Render(ViewContext viewContext, TextWriter writer)
             {
-                var renderEngine = viewContext.HttpContext.Request.GetOwinContext().Get<IRenderEngine>("RenderEngine");
+                var renderEngine = viewContext.HttpContext.Items["RenderEngine"] as IRenderEngine;
                 if (renderEngine == null) throw new Exception("Couldn't get IRenderEngine from the context request items.");
 
                 var path = Path;
