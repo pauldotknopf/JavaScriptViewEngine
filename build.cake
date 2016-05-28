@@ -55,8 +55,9 @@ Task("PrepareMvc")
 Task("Build")
     .Does(() =>
 {
-    ExecuteCommand("dotnet restore");
-    ExecuteCommand(string.Format("dotnet build \"src/JavaScriptViewEngine/project.json\" --configuration \"{0}\" -o \"{1}\"", configuration, System.IO.Path.Combine(buildDir, "JavaScriptViewEngine")));
+    ExecuteCommand("dotnet restore src");
+    ExecuteCommand(string.Format("dotnet build \"src/JavaScriptViewEngine.Mvc6/project.json\" --configuration \"{0}\"", configuration));
+    ExecuteCommand(string.Format("dotnet build \"src/JavaScriptViewEngine.Mvc5/project.json\" --configuration \"{0}\"", configuration));
 });
 
 Task("Test")
@@ -72,7 +73,8 @@ Task("Deploy")
     if(!DirectoryExists(distDir))
         CreateDirectory(distDir);
 
-    ExecuteCommand(string.Format("dotnet pack \"src/JavaScriptViewEngine/project.json\" --configuration \"{0}\" -o \"{1}\"", configuration, distDir));
+    ExecuteCommand(string.Format("dotnet pack \"src/JavaScriptViewEngine.Mvc6/project.json\" --configuration \"{0}\" -o \"{1}\"", configuration, distDir));
+    ExecuteCommand(string.Format("dotnet pack \"src/JavaScriptViewEngine.Mvc5/project.json\" --configuration \"{0}\" -o \"{1}\"", configuration, distDir));
 });
 
 //////////////////////////////////////////////////////////////////////
@@ -82,12 +84,14 @@ Task("Deploy")
 Task("Default")
     .IsDependentOn("EnsureDependencies")
     .IsDependentOn("Clean")
+    .IsDependentOn("PrepareMvc")
     .IsDependentOn("Build")
     .IsDependentOn("Test");
 
 Task("CI")
     .IsDependentOn("EnsureDependencies")
     .IsDependentOn("Clean")
+    .IsDependentOn("PrepareMvc")
     .IsDependentOn("Build")
     .IsDependentOn("Test")
     .IsDependentOn("Deploy");

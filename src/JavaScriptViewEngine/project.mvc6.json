@@ -35,6 +35,9 @@
           "version": "1.0.0-rc2-*",
           "type": "platform"
         }
+      },
+      "buildOptions": {
+        "define": [ "NETSTANDARD15" ]
       }
     },
     "net451": {
@@ -42,7 +45,7 @@
         "System.Net.Http": "4.0.0.0"
       },
       "buildOptions": {
-        "define": [ "NET451" ]
+        "define": [ "NET45" ]
       }
     }
   }

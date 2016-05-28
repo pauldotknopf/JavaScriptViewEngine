@@ -42,7 +42,7 @@
         "System.Net.Http": "4.0.0.0"
       },
       "buildOptions": {
-        "define": [ "NET451" ]
+        "define": [ "NET45" ]
       }
     }
   }
