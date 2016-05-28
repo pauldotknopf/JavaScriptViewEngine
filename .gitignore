@@ -237,3 +237,5 @@ _Pvt_Extensions
 tools/
 build/
 dist/
+src/JavaScriptViewEngine.Mvc5/
+src/JavaScriptViewEngine.Mvc6/

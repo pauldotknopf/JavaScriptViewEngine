@@ -15,6 +15,10 @@ var buildNumber=0;
 var baseDir=System.IO.Directory.GetCurrentDirectory();
 var buildDir=System.IO.Path.Combine(baseDir, "build");
 var distDir=System.IO.Path.Combine(baseDir, "dist");
+var srcDir = System.IO.Path.Combine(baseDir, "src");
+var srcProjectDir = System.IO.Path.Combine(srcDir, "JavaScriptViewEngine");
+var srcProjectMvc6Dir = System.IO.Path.Combine(srcDir, "JavaScriptViewEngine.Mvc6");
+var srcProjectMvc5Dir = System.IO.Path.Combine(srcDir, "JavaScriptViewEngine.Mvc5");
 var isRunningOnAppVeyor = AppVeyor.IsRunningOnAppVeyor;
 if(isRunningOnAppVeyor)
     buildNumber = AppVeyor.Environment.Build.Number;
@@ -35,13 +39,24 @@ Task("Clean")
 {
     CleanDirectory(buildDir);
     CleanDirectory(distDir);
+    CleanDirectory(srcProjectMvc6Dir);
+    CleanDirectory(srcProjectMvc5Dir);
+});
+
+Task("PrepareMvc")
+    .Does(() =>
+{
+    // We are going to copy src/JavaScriptViewEngine to src/JavaScriptViewEngine.MvcX/.
+    CopyDirectory(srcProjectDir, srcProjectMvc6Dir);
+    CopyFile(System.IO.Path.Combine(srcProjectDir, "project.mvc6.json"), System.IO.Path.Combine(srcProjectMvc6Dir, "project.json"));
+    CopyFile(System.IO.Path.Combine(srcProjectDir, "project.mvc5.json"), System.IO.Path.Combine(srcProjectMvc5Dir, "project.json"));
 });
 
 Task("Build")
     .Does(() =>
 {
     ExecuteCommand("dotnet restore");
-    ExecuteCommand(string.Format("dotnet publish \"src/JavaScriptViewEngine/project.json\" --configuration \"{0}\" -o \"{1}\"", configuration, System.IO.Path.Combine(buildDir, "JavaScriptViewEngine")));
+    ExecuteCommand(string.Format("dotnet build \"src/JavaScriptViewEngine/project.json\" --configuration \"{0}\" -o \"{1}\"", configuration, System.IO.Path.Combine(buildDir, "JavaScriptViewEngine")));
 });
 
 Task("Test")
