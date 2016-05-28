@@ -15,7 +15,7 @@
     "embed": [
       "NodeServices/Content/**/*"
     ],
-    "define": [ "DI", "DOTNETCORE" ]
+    "define": [ "DI", "DOTNETCORE", "MVCCORE1" ]
   },
 
   "dependencies": {

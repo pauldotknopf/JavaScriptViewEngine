@@ -48,6 +48,7 @@ Task("PrepareMvc")
 {
     // We are going to copy src/JavaScriptViewEngine to src/JavaScriptViewEngine.MvcX/.
     CopyDirectory(srcProjectDir, srcProjectMvc6Dir);
+    CopyDirectory(srcProjectDir, srcProjectMvc5Dir);
     CopyFile(System.IO.Path.Combine(srcProjectDir, "project.mvc6.json"), System.IO.Path.Combine(srcProjectMvc6Dir, "project.json"));
     CopyFile(System.IO.Path.Combine(srcProjectDir, "project.mvc5.json"), System.IO.Path.Combine(srcProjectMvc5Dir, "project.json"));
 });

@@ -15,7 +15,7 @@
     "embed": [
       "NodeServices/Content/**/*"
     ],
-    "define": [ "NET451" ]
+    "define": [ "NET451", "MVC5" ]
   },
 
   "dependencies": {

@@ -15,7 +15,7 @@
     "embed": [
       "NodeServices/Content/**/*"
     ],
-    "define": [ "DI", "DOTNETCORE" ]
+    "define": [ "DI", "DOTNETCORE", "MVCCORE1" ]
   },
 
   "dependencies": {
@@ -35,6 +35,9 @@
           "version": "1.0.0-rc2-*",
           "type": "platform"
         }
+      },
+      "buildOptions": {
+        "define": [ "NETSTANDARD15" ]
       }
     },
     "net451": {
