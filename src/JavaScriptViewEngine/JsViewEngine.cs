@@ -34,12 +34,28 @@ namespace JavaScriptViewEngine
 
         public ViewEngineResult FindView(ActionContext context, string viewName, bool isMainPage)
         {
-            throw new NotImplementedException();
+            if (!string.IsNullOrEmpty(_options.ViewNamePrefix))
+            {
+                if (!viewName.StartsWith(_options.ViewNamePrefix))
+                    return ViewEngineResult.NotFound(viewName, new string[] { viewName });
+            }
+
+            return ViewEngineResult.Found(viewName, new JsView
+            {
+                Path = !string.IsNullOrEmpty(_options.ViewNamePrefix) ? viewName.Substring(_options.ViewNamePrefix.Length) : viewName,
+                ViewType = ViewType.Full
+            });
         }
 
         public ViewEngineResult GetView(string executingFilePath, string viewPath, bool isMainPage)
         {
-            return ViewEngineResult.Found(viewPath, new JsView()
+            if (!string.IsNullOrEmpty(_options.ViewNamePrefix))
+            {
+                if (!viewPath.StartsWith(_options.ViewNamePrefix))
+                    return ViewEngineResult.NotFound(viewPath, new string[] { viewPath });
+            }
+
+            return ViewEngineResult.Found(viewPath, new JsView
             {
                 Path = !string.IsNullOrEmpty(_options.ViewNamePrefix) ? viewPath.Substring(_options.ViewNamePrefix.Length) : viewPath,
                 ViewType = ViewType.Full
@@ -50,7 +66,13 @@ namespace JavaScriptViewEngine
 
         public ViewEngineResult FindPartialView(ControllerContext controllerContext, string partialViewName, bool useCache)
         {
-            return new ViewEngineResult(new JsView()
+            if (!string.IsNullOrEmpty(_options.ViewNamePrefix))
+            {
+                if (!partialViewName.StartsWith(_options.ViewNamePrefix))
+                    return new ViewEngineResult(new string[] { partialViewName });
+            }
+
+            return new ViewEngineResult(new JsView
             {
                 Path = !string.IsNullOrEmpty(_options.ViewNamePrefix) ? partialViewName.Substring(_options.ViewNamePrefix.Length) : partialViewName,
                 ViewType = ViewType.Partial
@@ -59,13 +81,19 @@ namespace JavaScriptViewEngine
 
         public ViewEngineResult FindView(ControllerContext controllerContext, string viewName, string masterName, bool useCache)
         {
-            return new ViewEngineResult(new JsView()
+            if (!string.IsNullOrEmpty(_options.ViewNamePrefix))
+            {
+                if (!viewName.StartsWith(_options.ViewNamePrefix))
+                    return new ViewEngineResult(new string[] { viewName });
+            }
+
+            return new ViewEngineResult(new JsView
             {
                 Path = !string.IsNullOrEmpty(_options.ViewNamePrefix) ? viewName.Substring(_options.ViewNamePrefix.Length) : viewName,
                 ViewType = ViewType.Full
             }, this);
         }
-        
+
         public void ReleaseView(ControllerContext controllerContext, IView view)
         {
 
@@ -84,13 +112,13 @@ namespace JavaScriptViewEngine
             /// The path that get's sent to the javascript method.
             /// </summary>
             public string Path { get; set; }
-            
+
             /// <summary>
             /// The type of view that is being rendered.
             /// </summary>
             public ViewType ViewType { get; set; }
 
-            #if MVCCORE1
+#if MVCCORE1
             
             public async Task RenderAsync(ViewContext context)
             {
@@ -115,7 +143,7 @@ namespace JavaScriptViewEngine
                     areaObject = "default";
                 }
 
-                var result = await renderEngine.Render(path, context.ViewData.Model, context.ViewBag, context.RouteData.Values, areaObject.ToString(), ViewType);
+                var result = await renderEngine.RenderAsync(path, context.ViewData.Model, context.ViewBag, context.RouteData.Values, areaObject.ToString(), ViewType);
 
                 if (ViewType == ViewType.Full)
                 {
@@ -133,8 +161,8 @@ namespace JavaScriptViewEngine
                 }
             }
 
-            #else
-            
+#else
+
             public void Render(ViewContext viewContext, TextWriter writer)
             {
                 var renderEngine = viewContext.HttpContext.Items["RenderEngine"] as IRenderEngine;
@@ -172,11 +200,11 @@ namespace JavaScriptViewEngine
                 }
                 else
                 {
-                     writer.Write(result.Html);
+                    writer.Write(result.Html);
                 }
             }
 
-            #endif
+#endif
         }
     }
 }
