@@ -4,7 +4,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+#if DI
 using Microsoft.Extensions.Options;
+#endif
 
 namespace JavaScriptViewEngine.Pool
 {
@@ -14,7 +16,7 @@ namespace JavaScriptViewEngine.Pool
 	[DebuggerDisplay("{DebuggerDisplay,nq}")]
     public class RenderEnginePool : IRenderEnginePool
     {
-        #region Fields
+#region Fields
 
         readonly RenderPoolOptions _options;
         readonly IRenderEngineBuilder _renderEngineBuilder;
@@ -25,9 +27,9 @@ namespace JavaScriptViewEngine.Pool
         readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         readonly object _engineCreationLock = new object();
 
-        #endregion
+#endregion
 
-        #region Ctor
+#region Ctor
 
         /// <summary>
         /// Creates a new <see cref="RenderEnginePool"/>
@@ -44,9 +46,9 @@ namespace JavaScriptViewEngine.Pool
             InitializeWatcher();
         }
 
-        #endregion
+#endregion
 
-        #region IRenderEnginePool
+#region IRenderEnginePool
 
         /// <summary>
         /// Gets an engine from the pool. This engine should be returned to the pool via
@@ -177,9 +179,9 @@ namespace JavaScriptViewEngine.Pool
             _fileWatcher?.Dispose();
         }
 
-        #endregion
+#endregion
 
-        #region Methods
+#region Methods
 
         /// <summary>
 		/// Initializes a <see cref="FileWatcher"/> if enabled in the configuration.
@@ -247,9 +249,9 @@ namespace JavaScriptViewEngine.Pool
             _engineCount = 0;
         }
         
-        #endregion
+#endregion
 
-        #region Statistics and debugging
+#region Statistics and debugging
 
         // ReSharper disable once UnusedMember.Local
         /// <summary>
@@ -257,6 +259,6 @@ namespace JavaScriptViewEngine.Pool
         /// </summary>
         private string DebuggerDisplay => $"Engines = {EngineCount}, Available = {AvailableEngineCount}, Max = {_options.MaxEngines}";
 
-        #endregion
+#endregion
     }
 }

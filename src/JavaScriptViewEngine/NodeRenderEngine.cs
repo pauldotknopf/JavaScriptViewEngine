@@ -1,6 +1,11 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.NodeServices;
+using JavaScriptViewEngine.Utils;
+#if DOTNETCORE
 using Microsoft.AspNetCore.Routing;
+#else
+using System.Web.Routing;
+#endif
 
 namespace JavaScriptViewEngine
 {
@@ -37,7 +42,7 @@ namespace JavaScriptViewEngine
         /// <param name="area">The area.</param>
         /// <param name="viewType">Type of the view.</param>
         /// <returns></returns>
-        public Task<RenderResult> Render(string path, object model, dynamic viewBag, RouteValueDictionary routeValues, string area, ViewType viewType)
+        public Task<RenderResult> RenderAsync(string path, object model, dynamic viewBag, RouteValueDictionary routeValues, string area, ViewType viewType)
         {
             if (_options.GetArea != null)
                 area = _options.GetArea(area);
@@ -48,6 +53,21 @@ namespace JavaScriptViewEngine
                 model,
                 viewBag,
                 routeValues);
+        }
+
+        /// <summary>
+        /// Perform a render
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="model">The model.</param>
+        /// <param name="viewBag">The view bag.</param>
+        /// <param name="routeValues">The route values.</param>
+        /// <param name="area">The area.</param>
+        /// <param name="viewType">Type of the view.</param>
+        /// <returns></returns>
+        public RenderResult Render(string path, object model, dynamic viewBag, RouteValueDictionary routeValues, string area, ViewType viewType)
+        {
+            return AsyncHelpers.RunSync<RenderResult>(() => RenderAsync(path, model, viewBag, routeValues, area, viewType));
         }
 
         /// <summary>

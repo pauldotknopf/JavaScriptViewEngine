@@ -11,11 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "JavaScriptViewEngine", "src\JavaScriptViewEngine\JavaScriptViewEngine.xproj", "{08F559A5-E023-440C-B472-A708776AA32D}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Sample.Mvc6", "samples\Sample.Mvc6\Sample.Mvc6.xproj", "{7C67F479-082B-44E5-A29C-5AA9341E568F}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2164472C-593D-4A0E-9931-02BF34257947}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{E8AD6D5A-15CC-4CBC-BA60-A95A788963DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,16 +23,11 @@ Global
 		{08F559A5-E023-440C-B472-A708776AA32D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08F559A5-E023-440C-B472-A708776AA32D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08F559A5-E023-440C-B472-A708776AA32D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7C67F479-082B-44E5-A29C-5AA9341E568F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7C67F479-082B-44E5-A29C-5AA9341E568F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7C67F479-082B-44E5-A29C-5AA9341E568F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7C67F479-082B-44E5-A29C-5AA9341E568F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{08F559A5-E023-440C-B472-A708776AA32D} = {2164472C-593D-4A0E-9931-02BF34257947}
-		{7C67F479-082B-44E5-A29C-5AA9341E568F} = {E8AD6D5A-15CC-4CBC-BA60-A95A788963DD}
 	EndGlobalSection
 EndGlobal

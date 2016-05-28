@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+#if DOTNETCORE
 using Microsoft.AspNetCore.Routing;
+#else
+using System.Web.Routing;
+#endif
 using Newtonsoft.Json;
 
 namespace JavaScriptViewEngine
@@ -20,7 +24,19 @@ namespace JavaScriptViewEngine
         /// <param name="area">The area.</param>
         /// <param name="viewType">Type of the view.</param>
         /// <returns></returns>
-        Task<RenderResult> Render(string path, object model, dynamic viewBag, RouteValueDictionary routeValues, string area, ViewType viewType);
+        Task<RenderResult> RenderAsync(string path, object model, dynamic viewBag, RouteValueDictionary routeValues, string area, ViewType viewType);
+
+        /// <summary>
+        /// Perform a render
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="model">The model.</param>
+        /// <param name="viewBag">The view bag.</param>
+        /// <param name="routeValues">The route values.</param>
+        /// <param name="area">The area.</param>
+        /// <param name="viewType">Type of the view.</param>
+        /// <returns></returns>
+        RenderResult Render(string path, object model, dynamic viewBag, RouteValueDictionary routeValues, string area, ViewType viewType);
     }
     
     /// <summary>

@@ -1,11 +1,19 @@
 ﻿using JavaScriptViewEngine.Middleware;
 using System;
 using JavaScriptViewEngine.Pool;
+#if DOTNETCORE
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
+using AppBuilder = Microsoft.AspNetCore.Builder.IApplicationBuilder;
+#else
+using Owin;
+using AppBuilder = Owin.IAppBuilder;
+#endif
+#if DI
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Mvc;
+#endif
 
 namespace JavaScriptViewEngine
 {
@@ -15,10 +23,21 @@ namespace JavaScriptViewEngine
         /// Added the middlware that creates and disposes a <see cref="IRenderEngine"/> for each request
         /// </summary>
         /// <param name="app">The application.</param>
-        public static void UseJsEngine(this IApplicationBuilder app)
+        public static void UseJsEngine(
+            this AppBuilder app
+            #if !DOTNETCORE
+            , IRenderEngineFactory renderEngineFactory
+            #endif
+            )
         {
+            #if !DOTNETCORE
+            app.Use<RenderEngineMiddleware>(renderEngineFactory);
+            #else
             app.UseMiddleware<RenderEngineMiddleware>();
+            #endif
         }
+
+        #if DI
 
         /// <summary>
         /// Add the services required to use a render engine, a pool, etc.
@@ -68,5 +87,7 @@ namespace JavaScriptViewEngine
                 options.ViewEngines.Add(jsViewEngine);
             }
         }
+
+        #endif
     }
 }
