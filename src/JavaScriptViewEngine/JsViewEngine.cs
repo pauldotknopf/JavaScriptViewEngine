@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-#if DOTNETCORE
+#if MVCCORE1
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
@@ -30,7 +30,7 @@ namespace JavaScriptViewEngine
             _options = options.Value;
         }
 
-        #if DOTNETCORE
+        #if MVCCORE1
 
         public ViewEngineResult FindView(ActionContext context, string viewName, bool isMainPage)
         {
@@ -90,7 +90,7 @@ namespace JavaScriptViewEngine
             /// </summary>
             public ViewType ViewType { get; set; }
 
-            #if DOTNETCORE
+            #if MVCCORE1
             
             public async Task RenderAsync(ViewContext context)
             {
