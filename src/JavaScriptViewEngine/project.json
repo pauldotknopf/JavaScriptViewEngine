@@ -14,47 +14,35 @@
   "buildOptions": {
     "embed": [
       "NodeServices/Content/**/*"
-    ]
+    ],
+    "define": [ "DI", "DOTNETCORE" ]
   },
 
   "dependencies": {
-    
+    "Microsoft.AspNetCore.Hosting.Abstractions": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.Http.Abstractions": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Options": "1.0.0-rc2-final"
   },
 
   "frameworks": {
-    "netcoreapp1.0": {
+    "netstandard1.5": {
       "imports": [
-        "dotnet5.6",
-        "dnxcore50",
-        "portable-net45+win8"
+        "portable-net451+win8"
       ],
       "dependencies": {
-        "Microsoft.AspNetCore.Hosting.Abstractions": "1.0.0-rc2-final",
-        "Microsoft.AspNetCore.Http.Abstractions": "1.0.0-rc2-final",
-        "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0-rc2-final",
-        "Microsoft.Extensions.Options": "1.0.0-rc2-final",
         "Microsoft.NETCore.App": {
           "version": "1.0.0-rc2-*",
           "type": "platform"
         }
-      },
-      "buildOptions": {
-        "define": ["DOTNETCORE", "DI"]
       }
     },
-    "net45": {
+    "net451": {
       "frameworkAssemblies": {
-        "System.Web": "4.0.0.0",
         "System.Net.Http": "4.0.0.0"
       },
-      "dependencies": {
-        "Newtonsoft.Json": "8.0.3",
-        "Microsoft.AspNet.Mvc": "5.2.3",
-        "Owin": "1.0.0",
-        "Microsoft.Owin": "3.0.1"
-      },
       "buildOptions": {
-        "define": [ "DOTNET45" ]
+        "define": [ "NET451" ]
       }
     }
   }
