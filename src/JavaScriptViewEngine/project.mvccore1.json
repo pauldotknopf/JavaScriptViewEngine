@@ -1,6 +1,6 @@
 {
-  "version": "1.2.2-*",
-  "title": "JavaScriptViewEngine",
+  "version": "1.0.0-*",
+  "title": "JavaScriptViewEngine.MvcCore1",
   "description": "An ASP.NET ViewEngine that uses javscript to render markup (for universal rendering).",
   "packOptions": {
     "summary": "An ASP.NET ViewEngine that uses javscript to render markup (for universal rendering)",

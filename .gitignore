@@ -239,3 +239,4 @@ build/
 dist/
 src/JavaScriptViewEngine.Mvc5/
 src/JavaScriptViewEngine.Mvc6/
+src/JavaScriptViewEngine.MvcCore1/

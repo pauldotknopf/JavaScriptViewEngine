@@ -6,23 +6,27 @@
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
+var versionPrefix = Argument("versionPrefix", "");
 
 //////////////////////////////////////////////////////////////////////
 // PREPARATION
 //////////////////////////////////////////////////////////////////////
 
-var buildNumber=0;
+var buildNumber=1;
 var baseDir=System.IO.Directory.GetCurrentDirectory();
 var buildDir=System.IO.Path.Combine(baseDir, "build");
 var distDir=System.IO.Path.Combine(baseDir, "dist");
 var srcDir = System.IO.Path.Combine(baseDir, "src");
 var srcProjectDir = System.IO.Path.Combine(srcDir, "JavaScriptViewEngine");
-var srcProjectMvc6Dir = System.IO.Path.Combine(srcDir, "JavaScriptViewEngine.Mvc6");
+var srcProjectMvcCore1Dir = System.IO.Path.Combine(srcDir, "JavaScriptViewEngine.MvcCore1");
 var srcProjectMvc5Dir = System.IO.Path.Combine(srcDir, "JavaScriptViewEngine.Mvc5");
 var isRunningOnAppVeyor = AppVeyor.IsRunningOnAppVeyor;
 if(isRunningOnAppVeyor)
     buildNumber = AppVeyor.Environment.Build.Number;
-System.Environment.SetEnvironmentVariable("DNX_BUILD_VERSION", buildNumber.ToString(), System.EnvironmentVariableTarget.Process);
+var version = buildNumber.ToString();
+if(!string.IsNullOrEmpty(versionPrefix))
+  version = versionPrefix + "-" + version;
+System.Environment.SetEnvironmentVariable("DOTNET_BUILD_VERSION", version, System.EnvironmentVariableTarget.Process);
 
 //////////////////////////////////////////////////////////////////////
 // TASKS
@@ -39,7 +43,7 @@ Task("Clean")
 {
     CleanDirectory(buildDir);
     CleanDirectory(distDir);
-    CleanDirectory(srcProjectMvc6Dir);
+    CleanDirectory(srcProjectMvcCore1Dir);
     CleanDirectory(srcProjectMvc5Dir);
 });
 
@@ -47,9 +51,9 @@ Task("PrepareMvc")
     .Does(() =>
 {
     // We are going to copy src/JavaScriptViewEngine to src/JavaScriptViewEngine.MvcX/.
-    CopyDirectory(srcProjectDir, srcProjectMvc6Dir);
+    CopyDirectory(srcProjectDir, srcProjectMvcCore1Dir);
     CopyDirectory(srcProjectDir, srcProjectMvc5Dir);
-    CopyFile(System.IO.Path.Combine(srcProjectDir, "project.mvc6.json"), System.IO.Path.Combine(srcProjectMvc6Dir, "project.json"));
+    CopyFile(System.IO.Path.Combine(srcProjectDir, "project.mvccore1.json"), System.IO.Path.Combine(srcProjectMvcCore1Dir, "project.json"));
     CopyFile(System.IO.Path.Combine(srcProjectDir, "project.mvc5.json"), System.IO.Path.Combine(srcProjectMvc5Dir, "project.json"));
 });
 
@@ -57,7 +61,7 @@ Task("Build")
     .Does(() =>
 {
     ExecuteCommand("dotnet restore src");
-    ExecuteCommand(string.Format("dotnet build \"src/JavaScriptViewEngine.Mvc6/project.json\" --configuration \"{0}\"", configuration));
+    ExecuteCommand(string.Format("dotnet build \"src/JavaScriptViewEngine.MvcCore1/project.json\" --configuration \"{0}\"", configuration));
     ExecuteCommand(string.Format("dotnet build \"src/JavaScriptViewEngine.Mvc5/project.json\" --configuration \"{0}\"", configuration));
 });
 
@@ -74,8 +78,8 @@ Task("Deploy")
     if(!DirectoryExists(distDir))
         CreateDirectory(distDir);
 
-    ExecuteCommand(string.Format("dotnet pack \"src/JavaScriptViewEngine.Mvc6/project.json\" --configuration \"{0}\" -o \"{1}\"", configuration, distDir));
-    ExecuteCommand(string.Format("dotnet pack \"src/JavaScriptViewEngine.Mvc5/project.json\" --configuration \"{0}\" -o \"{1}\"", configuration, distDir));
+    ExecuteCommand(string.Format("dotnet pack \"src/JavaScriptViewEngine.MvcCore1/project.json\" --configuration \"{0}\" -o \"{1}\"", configuration, distDir, versionPrefix));
+    ExecuteCommand(string.Format("dotnet pack \"src/JavaScriptViewEngine.Mvc5/project.json\" --configuration \"{0}\" -o \"{1}\"", configuration, distDir, versionPrefix));
 });
 
 //////////////////////////////////////////////////////////////////////
