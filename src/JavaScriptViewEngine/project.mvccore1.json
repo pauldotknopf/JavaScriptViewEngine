@@ -19,25 +19,24 @@
   },
 
   "dependencies": {
-    "Microsoft.AspNetCore.Hosting.Abstractions": "1.0.0-rc2-final",
-    "Microsoft.AspNetCore.Http.Abstractions": "1.0.0-rc2-final",
-    "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0-rc2-final",
-    "Microsoft.Extensions.Options": "1.0.0-rc2-final"
+    "Microsoft.AspNetCore.Hosting.Abstractions": "1.0.0",
+    "Microsoft.AspNetCore.Http.Abstractions": "1.0.0",
+    "Microsoft.Extensions.Options": "1.0.0",
+    "Microsoft.AspNetCore.Routing.Abstractions": "1.0.0",
+    "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0"
   },
 
   "frameworks": {
-    "netstandard1.5": {
-      "imports": [
-        "portable-net451+win8"
-      ],
-      "dependencies": {
-        "Microsoft.NETCore.App": {
-          "version": "1.0.0-rc2-*",
-          "type": "platform"
-        }
-      },
+    "netstandard1.6": {
       "buildOptions": {
         "define": [ "NETSTANDARD15" ]
+      },
+      "dependencies": {
+        "System.IO.FileSystem.Watcher": "4.0.0",
+        "System.Threading.Timer": "4.0.1",
+        "System.Net.Http": "4.1.0",
+        "System.Diagnostics.Process": "4.1.0",
+        "System.Console": "4.0.0"
       }
     },
     "net451": {

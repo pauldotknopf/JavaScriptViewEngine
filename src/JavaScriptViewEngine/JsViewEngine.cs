@@ -135,15 +135,15 @@ namespace JavaScriptViewEngine
                     }
                 }
 
-                object areaObject;
-                context.ActionDescriptor.RouteValueDefaults.TryGetValue("area", out areaObject);
+                string areaObject;
+                context.ActionDescriptor.RouteValues.TryGetValue("area", out areaObject);
 
                 if (areaObject == null)
                 {
                     areaObject = "default";
                 }
 
-                var result = await renderEngine.RenderAsync(path, context.ViewData.Model, context.ViewBag, context.RouteData.Values, areaObject.ToString(), ViewType);
+                var result = await renderEngine.RenderAsync(path, context.ViewData.Model, context.ViewBag, context.RouteData.Values, areaObject, ViewType);
 
                 if (ViewType == ViewType.Full)
                 {
