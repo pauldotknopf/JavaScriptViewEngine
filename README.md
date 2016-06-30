@@ -1,6 +1,6 @@
 # JavaScriptViewEngine
 
-An ASP.NET MVC (Currently, only MVC6) ViewEngine for rendering markup in a javascript environment. Ideal for React and Angular server-side rendering.
+An ASP.NET MVC (MVC Core 1, MVC 6) ViewEngine for rendering markup in a javascript environment. Ideal for React and Angular server-side rendering.
 
 # Why?
 
