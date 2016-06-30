@@ -67,9 +67,9 @@ namespace Microsoft.AspNetCore.NodeServices {
 
                     var nodePathValue = existingNodePath + Path.Combine(this._projectPath, "node_modules");
                     #if NET45
-                    startInfo.EnvironmentVariables.Add("NODE_PATH", nodePathValue);
+                    startInfo.EnvironmentVariables["NODE_PATH"] = nodePathValue;
                     #else
-                    startInfo.Environment.Add("NODE_PATH", nodePathValue);
+                    startInfo.Environment["NODE_PATH"] = nodePathValue;
                     #endif
 
                     this.OnBeforeLaunchProcess();
