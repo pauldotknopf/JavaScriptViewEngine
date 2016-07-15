@@ -42,9 +42,6 @@
       }
     },
     "net451": {
-      "frameworkAssemblies": {
-        "System.Net.Http": "4.0.0.0"
-      },
       "buildOptions": {
         "define": [ "NET45" ]
       }
