@@ -23,7 +23,7 @@ namespace JavaScriptViewEngine
         /// Gets a JavaScript engine from the pool.
         /// </summary>
         /// <returns>The JavaScript engine</returns>
-        public virtual IRenderEngine GetEngine()
+        public virtual IRenderEngine RequestEngine()
         {
             EnsureValidState();
             return _pool.GetEngine();
@@ -33,7 +33,7 @@ namespace JavaScriptViewEngine
         /// Returns an engine to the pool so it can be reused
         /// </summary>
         /// <param name="engine">Engine to return</param>
-        public virtual void ReturnEngineToPool(IRenderEngine engine)
+        public virtual void ReturnEngine(IRenderEngine engine)
         {
             if (!_disposed)
                 _pool.ReturnEngineToPool(engine);

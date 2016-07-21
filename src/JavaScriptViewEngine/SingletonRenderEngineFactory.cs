@@ -26,7 +26,7 @@ namespace JavaScriptViewEngine
         /// <returns>
         /// The <see cref="IRenderEngine" />
         /// </returns>
-        public virtual IRenderEngine GetEngine()
+        public virtual IRenderEngine RequestEngine()
         {
             EnsureValidState();
             return _renderEngine;
@@ -36,7 +36,7 @@ namespace JavaScriptViewEngine
         /// Returns an <see cref="IRenderEngine" /> to the pool so it can be reused
         /// </summary>
         /// <param name="engine">Engine to return</param>
-        public virtual void ReturnEngineToPool(IRenderEngine engine)
+        public virtual void ReturnEngine(IRenderEngine engine)
         {
             // no pooling
         }

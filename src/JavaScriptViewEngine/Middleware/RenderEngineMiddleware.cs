@@ -42,7 +42,7 @@ namespace JavaScriptViewEngine.Middleware
             
             try
             {
-                engine = _renderEngineFactory.GetEngine();
+                engine = _renderEngineFactory.RequestEngine();
 
                 context.Items["RenderEngine"] = engine;
 
@@ -51,7 +51,7 @@ namespace JavaScriptViewEngine.Middleware
             finally
             {
                 if (engine != null)
-                    _renderEngineFactory.ReturnEngineToPool(engine);
+                    _renderEngineFactory.ReturnEngine(engine);
             }
         }
     }
