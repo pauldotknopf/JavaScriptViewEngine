@@ -6,15 +6,15 @@ namespace JavaScriptViewEngine
     /// <summary>
     /// Handles creation of <see cref="IRenderEngine"/> instances. All methods are thread-safe.
     /// </summary>
-    public class RenderEngineFactory : IRenderEngineFactory
+    public class PooledRenderEngineFactory : IRenderEngineFactory
     {
         IRenderEnginePool _pool;
         bool _disposed;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RenderEngineFactory"/> class.
+        /// Initializes a new instance of the <see cref="PooledRenderEngineFactory"/> class.
         /// </summary>
-        public RenderEngineFactory(IRenderEnginePool pool)
+        public PooledRenderEngineFactory(IRenderEnginePool pool)
         {
             _pool = pool;
         }

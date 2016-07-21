@@ -50,7 +50,7 @@ namespace JavaScriptViewEngine
             services.TryAddTransient<IFileWatcher, FileWatcher>();
             services.TryAddTransient<IRenderEnginePool, RenderEnginePool>();
             services.TryAddTransient<IRenderEngineBuilder, NodeRenderEngineBuilder>();
-            services.TryAddSingleton<IRenderEngineFactory, RenderEngineFactory>();
+            services.TryAddSingleton<IRenderEngineFactory, PooledRenderEngineFactory>();
             services.TryAddTransient<IJsViewEngine, JsViewEngine>();
         }
 
