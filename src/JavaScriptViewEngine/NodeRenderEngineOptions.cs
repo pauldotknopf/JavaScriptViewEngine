@@ -1,7 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+#if DOTNETCORE
+using Microsoft.AspNetCore.Routing;
+#else
+using System.Web.Routing;
+#endif
 
 namespace JavaScriptViewEngine
 {
@@ -22,6 +24,14 @@ namespace JavaScriptViewEngine
         /// "default" is default. If you would like to invoke another
         /// script based on a route value, implement that logic here.
         /// </summary>
+        [Obsolete("This isn't used any more. Use 'GetModuleName' instead.", true)]
         public Func<string, string> GetArea = (area) => area;
+
+        /// <summary>
+        /// The delegate that determines what node module to invoke the 'RenderView' and 'RenderPartialView' methods from.
+        /// </summary>
+        public GetModuleNameDelegate GetModuleName = (path, model, viewBag, routeValues, area, viewType) => "default";
     }
+
+    public delegate string GetModuleNameDelegate(string path, object model, dynamic viewBag, RouteValueDictionary routeValues, string area, ViewType viewType);
 }

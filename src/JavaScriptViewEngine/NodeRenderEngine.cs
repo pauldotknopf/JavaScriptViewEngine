@@ -44,15 +44,17 @@ namespace JavaScriptViewEngine
         /// <returns></returns>
         public Task<RenderResult> RenderAsync(string path, object model, dynamic viewBag, RouteValueDictionary routeValues, string area, ViewType viewType)
         {
-            if (_options.GetArea != null)
-                area = _options.GetArea(area);
+            var moduleName = _options.GetModuleName != null
+                ? _options.GetModuleName(path, model, viewBag, routeValues, area, viewType)
+                : "default";
 
-            return _nodeServices.InvokeExport<RenderResult>(area,
+            return _nodeServices.InvokeExport<RenderResult>(moduleName,
                 viewType == ViewType.Full ? "renderView" : "renderPartialView",
                 path,
                 model,
                 viewBag,
-                routeValues);
+                routeValues,
+                area);
         }
 
         /// <summary>
