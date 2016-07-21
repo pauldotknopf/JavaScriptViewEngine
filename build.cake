@@ -26,7 +26,7 @@ if(isRunningOnAppVeyor)
 var version = buildNumber.ToString();
 if(!string.IsNullOrEmpty(versionPrefix))
   version = versionPrefix + "-" + version;
-System.Environment.SetEnvironmentVariable("DOTNET_BUILD_VERSION", version, System.EnvironmentVariableTarget.Process);
+//System.Environment.SetEnvironmentVariable("DOTNET_BUILD_VERSION", version, System.EnvironmentVariableTarget.Process);
 
 //////////////////////////////////////////////////////////////////////
 // TASKS
