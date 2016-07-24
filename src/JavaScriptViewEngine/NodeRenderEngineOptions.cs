@@ -1,4 +1,6 @@
 ﻿using System;
+using JavaScriptViewEngine.Pool;
+using Microsoft.AspNetCore.NodeServices;
 #if DOTNETCORE
 using Microsoft.AspNetCore.Routing;
 #else
@@ -12,6 +14,15 @@ namespace JavaScriptViewEngine
     /// </summary>
     public class NodeRenderEngineOptions
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NodeRenderEngineOptions"/> class.
+        /// </summary>
+        public NodeRenderEngineOptions()
+        {
+            WatchFileExtensions = new NodeServicesOptions().WatchFileExtensions;
+            NodeHostingModel = NodeHostingModel.Http;
+        }
+
         /// <summary>
         /// The project directory that node will be started in.
         /// If you are using npm modules, the modules must be in
@@ -31,6 +42,21 @@ namespace JavaScriptViewEngine
         /// The delegate that determines what node module to invoke the 'RenderView' and 'RenderPartialView' methods from.
         /// </summary>
         public GetModuleNameDelegate GetModuleName = (path, model, viewBag, routeValues, area, viewType) => "default";
+
+        /// <summary>
+        /// The JavaScriptServices node engine has supported for auto-restarting itself when files change.
+        /// This is different than the <see cref="IRenderEnginePool" />, which has it's own file watching
+        /// and pool recycling.
+        /// If you are using the node rendering engine with the <see cref="IRenderEnginePool" />, you should
+        /// set this array to empty to avoid the JavaScriptServices for restarting node, and allowing the
+        /// engine pool to manage the recycling.
+        /// </summary>
+        public string[] WatchFileExtensions { get; set; }
+
+        /// <summary>
+        /// How should the node instance be invoked remotely?
+        /// </summary>
+        public NodeHostingModel NodeHostingModel { get; set; }
     }
 
     public delegate string GetModuleNameDelegate(string path, object model, dynamic viewBag, RouteValueDictionary routeValues, string area, ViewType viewType);

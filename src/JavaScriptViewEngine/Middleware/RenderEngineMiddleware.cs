@@ -85,7 +85,7 @@ namespace JavaScriptViewEngine.Middleware
                 if(httpContextBase == null)
                     throw new System.Exception("This middleware is currently only works with Microsoft.Owin.Host.SystemWeb.");
 
-                engine = _renderEngineFactory.GetEngine();
+                engine = _renderEngineFactory.RequestEngine();
 
                 httpContextBase.Items["RenderEngine"] = engine;
 
@@ -95,7 +95,7 @@ namespace JavaScriptViewEngine.Middleware
             finally
             {
                 if (engine != null)
-                    _renderEngineFactory.ReturnEngineToPool(engine);
+                    _renderEngineFactory.ReturnEngine(engine);
             }
         }
     }

@@ -120,7 +120,8 @@ namespace JavaScriptViewEngine
                 {
                     services.TryAddTransient<IRenderEnginePool, RenderEnginePool>();
                     services.TryAddSingleton<IRenderEngineFactory, PooledRenderEngineFactory>();
-                    services.Configure(renderPoolOptionsSetupAction);
+                    if(renderPoolOptionsSetupAction != null)
+                        services.Configure(renderPoolOptionsSetupAction);
                 };
 
                 return this;
@@ -160,6 +161,8 @@ namespace JavaScriptViewEngine
                 _renderEngineBuilderAction = services =>
                 {
                     services.TryAddTransient<IRenderEngineBuilder, NodeRenderEngineBuilder>();
+                    if (nodeRenderOptionsAction != null)
+                        services.Configure(nodeRenderOptionsAction);
                 };
 
                 return this;

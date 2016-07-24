@@ -27,8 +27,9 @@ namespace JavaScriptViewEngine
             _options = options;
             _nodeServices = Configuration.CreateNodeServices(new NodeServicesOptions
             {
-                HostingModel = NodeHostingModel.Http,
-                ProjectPath = options.ProjectDirectory
+                HostingModel = options.NodeHostingModel,
+                ProjectPath = options.ProjectDirectory,
+                WatchFileExtensions = options.WatchFileExtensions
             });
         }
 
