@@ -31,6 +31,10 @@ There were existing projects out there that allowed us to render javascript. All
 - [X] ~~Create boilerplate for getting started with React~~ Done, [react-aspnet-boilerplate](react-aspnet-boilerplate))
 - [ ] Create boilerplate for getting started with Angular.
 
+# Example projects
+
+Checkout the [JavaScriptViewEngine.Samples](https://github.com/pauldotknopf/JavaScriptViewEngine.Samples/tree/master/src) repo!
+
 # In a nutshell
 
 Getting started is pretty simple.
