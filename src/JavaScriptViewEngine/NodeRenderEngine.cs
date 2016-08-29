@@ -29,7 +29,8 @@ namespace JavaScriptViewEngine
             {
                 HostingModel = options.NodeHostingModel,
                 ProjectPath = options.ProjectDirectory,
-                WatchFileExtensions = options.WatchFileExtensions
+                WatchFileExtensions = options.WatchFileExtensions,
+                NodeInstanceOutputLogger = options.NodeInstanceOutputLogger
             });
         }
 
