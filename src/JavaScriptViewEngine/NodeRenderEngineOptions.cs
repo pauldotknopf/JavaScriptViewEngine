@@ -1,6 +1,7 @@
 ﻿using System;
 using JavaScriptViewEngine.Pool;
 using Microsoft.AspNetCore.NodeServices;
+using Microsoft.Extensions.Logging;
 #if DOTNETCORE
 using Microsoft.AspNetCore.Routing;
 #else
@@ -57,6 +58,8 @@ namespace JavaScriptViewEngine
         /// How should the node instance be invoked remotely?
         /// </summary>
         public NodeHostingModel NodeHostingModel { get; set; }
+
+        public ILogger NodeInstanceOutputLogger { get; set; }
     }
 
     public delegate string GetModuleNameDelegate(string path, object model, dynamic viewBag, RouteValueDictionary routeValues, string area, ViewType viewType);

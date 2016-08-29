@@ -24,7 +24,7 @@
     "Microsoft.Extensions.Options": "1.0.0",
     "Microsoft.AspNetCore.Routing.Abstractions": "1.0.0",
     "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0",
-    "Microsoft.AspNetCore.NodeServices": "1.0.0-beta-000007" 
+    "Microsoft.AspNetCore.NodeServices": "1.0.0-beta-000011" 
   },
 
   "frameworks": {
