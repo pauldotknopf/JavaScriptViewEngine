@@ -4,7 +4,7 @@ An ASP.NET MVC (MVC Core 1, MVC 6) ViewEngine for rendering markup in a javascri
 
 # Why?
 
-The main drive behind this is to support isomorphic/universal rendering. The idea is that your ```Model``` will be passed to a javascript method that that will render markup in return. Imagine having a react component tree that is hydrated via a single immutable JSON structure, representing the initial state of the service-side rendered page.
+The main drive behind this is to support isomorphic/universal rendering. The idea is that your ```Model``` will be passed to a javascript method that will render markup in return. Imagine having a react component tree that is hydrated via a single immutable JSON structure, representing the initial state of the service-side rendered page.
 
 There were existing projects out there that allowed us to render javascript. All of them had their issues.
 
