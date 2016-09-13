@@ -1,5 +1,5 @@
 {
-  "version": "1.3.4-*",
+  "version": "1.3.6-*",
   "title": "JavaScriptViewEngine.MvcCore1",
   "description": "An ASP.NET ViewEngine that uses javscript to render markup (for universal rendering).",
   "packOptions": {
@@ -24,7 +24,7 @@
     "Microsoft.Extensions.Options": "1.0.0",
     "Microsoft.AspNetCore.Routing.Abstractions": "1.0.0",
     "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0",
-    "Microsoft.AspNetCore.NodeServices": "1.0.0-beta-000011"
+    "Microsoft.AspNetCore.NodeServices": "1.0.0-beta-000012"
   },
 
   "frameworks": {

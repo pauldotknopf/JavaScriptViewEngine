@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.NodeServices;
 using JavaScriptViewEngine.Utils;
+using System;
 #if DOTNETCORE
 using Microsoft.AspNetCore.Routing;
 #else
@@ -21,17 +22,22 @@ namespace JavaScriptViewEngine
         /// <summary>
         /// Initializes a new instance of the <see cref="NodeRenderEngine" /> class.
         /// </summary>
+        /// <param name="serviceProvider">The service provider.</param>
         /// <param name="options">The options.</param>
-        public NodeRenderEngine(NodeRenderEngineOptions options)
+        public NodeRenderEngine(IServiceProvider serviceProvider, NodeRenderEngineOptions options)
         {
             _options = options;
-            _nodeServices = Configuration.CreateNodeServices(new NodeServicesOptions
+
+            var nodeOptions = new NodeServicesOptions(serviceProvider)
             {
                 HostingModel = options.NodeHostingModel,
                 ProjectPath = options.ProjectDirectory,
-                WatchFileExtensions = options.WatchFileExtensions,
-                NodeInstanceOutputLogger = options.NodeInstanceOutputLogger
-            });
+                WatchFileExtensions = options.WatchFileExtensions
+            };
+            if (options.NodeInstanceOutputLogger != null)
+                nodeOptions.NodeInstanceOutputLogger = options.NodeInstanceOutputLogger;
+
+            _nodeServices = NodeServicesFactory.CreateNodeServices(nodeOptions);
         }
 
         /// <summary>

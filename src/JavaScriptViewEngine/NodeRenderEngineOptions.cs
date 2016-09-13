@@ -2,6 +2,7 @@
 using JavaScriptViewEngine.Pool;
 using Microsoft.AspNetCore.NodeServices;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 #if DOTNETCORE
 using Microsoft.AspNetCore.Routing;
 #else
@@ -20,7 +21,7 @@ namespace JavaScriptViewEngine
         /// </summary>
         public NodeRenderEngineOptions()
         {
-            WatchFileExtensions = new NodeServicesOptions().WatchFileExtensions;
+            WatchFileExtensions = new string[] { ".js", ".jsx", ".ts", ".tsx", ".json", ".html" };
             NodeHostingModel = NodeHostingModel.Http;
         }
 

@@ -1,6 +1,7 @@
 ﻿#if DI
 using Microsoft.Extensions.Options;
 #endif
+using System;
 
 namespace JavaScriptViewEngine
 {
@@ -12,13 +13,16 @@ namespace JavaScriptViewEngine
     public class NodeRenderEngineBuilder : IRenderEngineBuilder
     {
         private readonly NodeRenderEngineOptions _options;
+        private readonly IServiceProvider _serviceProvider;
 
         public NodeRenderEngineBuilder(
             #if DOTNETCORE
             Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnvironment, 
             #endif
+            IServiceProvider serviceProvider,
             IOptions<NodeRenderEngineOptions> options)
         {
+            _serviceProvider = serviceProvider;
             _options = options.Value;
             if (string.IsNullOrEmpty(_options.ProjectDirectory))
             {
@@ -32,7 +36,7 @@ namespace JavaScriptViewEngine
 
         public IRenderEngine Build()
         {
-            return new NodeRenderEngine(_options);
+            return new NodeRenderEngine(_serviceProvider, _options);
         }
     }
 }
