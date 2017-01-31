@@ -61,6 +61,11 @@ namespace JavaScriptViewEngine
         public NodeHostingModel NodeHostingModel { get; set; }
 
         public ILogger NodeInstanceOutputLogger { get; set; }
+
+        /// <summary>
+        /// If set, starts the Node.js instance with the specified environment variables.
+        /// </summary>
+        public IDictionary<string, string> EnvironmentVariables { get; set; }
     }
 
     public delegate string GetModuleNameDelegate(string path, object model, dynamic viewBag, RouteValueDictionary routeValues, string area, ViewType viewType);

@@ -32,7 +32,8 @@ namespace JavaScriptViewEngine
             {
                 HostingModel = options.NodeHostingModel,
                 ProjectPath = options.ProjectDirectory,
-                WatchFileExtensions = options.WatchFileExtensions
+                WatchFileExtensions = options.WatchFileExtensions,
+                EnvironmentVariables = options.EnvironmentVariables
             };
             if (options.NodeInstanceOutputLogger != null)
                 nodeOptions.NodeInstanceOutputLogger = options.NodeInstanceOutputLogger;

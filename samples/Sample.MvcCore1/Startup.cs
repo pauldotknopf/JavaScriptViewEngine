@@ -23,10 +23,15 @@ namespace Sample.MvcCore1
         {
             services.AddJsEngine(builder =>
             {
-                builder.UseNodeRenderEngine();
+                builder.UseNodeRenderEngine(SetOptions);
                 builder.UseSingletonEngineFactory();
             });
             services.AddMvc();
+        }
+
+        private static void SetOptions(NodeRenderEngineOptions options)
+        {
+            options.EnvironmentVariables = new Dictionary<string, string> { { "TEST_VAR", "CUSTOM_VAL" } };
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
