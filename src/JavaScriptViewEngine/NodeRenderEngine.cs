@@ -30,10 +30,12 @@ namespace JavaScriptViewEngine
 
             var nodeOptions = new NodeServicesOptions(serviceProvider)
             {
-                HostingModel = options.NodeHostingModel,
                 ProjectPath = options.ProjectDirectory,
                 WatchFileExtensions = options.WatchFileExtensions
             };
+
+	        if (options.NodeInstanceFactory != null)
+		        nodeOptions.NodeInstanceFactory = options.NodeInstanceFactory;
             if (options.NodeInstanceOutputLogger != null)
                 nodeOptions.NodeInstanceOutputLogger = options.NodeInstanceOutputLogger;
 

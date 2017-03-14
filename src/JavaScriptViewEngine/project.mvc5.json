@@ -22,7 +22,7 @@
     "Microsoft.AspNet.Mvc": "5.2.3",
     "Owin": "1.0.0",
     "Microsoft.Owin": "3.0.1",
-    "Microsoft.AspNetCore.NodeServices": "1.0.0-beta-000012"
+    "Microsoft.AspNetCore.NodeServices": "1.1.0"
   },
 
   "frameworks": {

@@ -19,12 +19,12 @@
   },
 
   "dependencies": {
-    "Microsoft.AspNetCore.Hosting.Abstractions": "1.0.0",
-    "Microsoft.AspNetCore.Http.Abstractions": "1.0.0",
-    "Microsoft.Extensions.Options": "1.0.0",
-    "Microsoft.AspNetCore.Routing.Abstractions": "1.0.0",
-    "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0",
-    "Microsoft.AspNetCore.NodeServices": "1.0.0-beta-000012"
+    "Microsoft.AspNetCore.Hosting.Abstractions": "1.1.1",
+    "Microsoft.AspNetCore.Http.Abstractions": "1.1.1",
+    "Microsoft.Extensions.Options": "1.1.1",
+    "Microsoft.AspNetCore.Routing.Abstractions": "1.1.1",
+    "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.1.2",
+    "Microsoft.AspNetCore.NodeServices": "1.1.0"
   },
 
   "frameworks": {
@@ -38,7 +38,7 @@
         "define": [ "NETSTANDARD15" ]
       },
       "dependencies": {
-        "System.Threading.Timer": "4.0.1"
+        "System.Threading.Timer": "4.3.0"
       }
     },
     "net451": {
