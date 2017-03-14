@@ -31,7 +31,8 @@ namespace JavaScriptViewEngine
             var nodeOptions = new NodeServicesOptions(serviceProvider)
             {
                 ProjectPath = options.ProjectDirectory,
-                WatchFileExtensions = options.WatchFileExtensions
+                WatchFileExtensions = options.WatchFileExtensions,
+                EnvironmentVariables = options.EnvironmentVariables
             };
 
 	        if (options.NodeInstanceFactory != null)
