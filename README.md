@@ -109,3 +109,12 @@ public class GreetingViewModel
     public string Greeting { get; set; }
 }
 ```
+
+# How to build
+This project uses Cake for building: [http://cakebuild.net/](http://cakebuild.net/)
+
+## Windows
+From a Powershell prompt:
+`PS> ./build.ps1`
+
+

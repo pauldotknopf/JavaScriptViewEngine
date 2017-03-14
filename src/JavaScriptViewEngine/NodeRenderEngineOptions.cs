@@ -3,6 +3,7 @@ using JavaScriptViewEngine.Pool;
 using Microsoft.AspNetCore.NodeServices;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.NodeServices.HostingModels;
 #if DOTNETCORE
 using Microsoft.AspNetCore.Routing;
 #else
@@ -22,7 +23,6 @@ namespace JavaScriptViewEngine
         public NodeRenderEngineOptions()
         {
             WatchFileExtensions = new string[] { ".js", ".jsx", ".ts", ".tsx", ".json", ".html" };
-            NodeHostingModel = NodeHostingModel.Http;
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace JavaScriptViewEngine
         /// <summary>
         /// How should the node instance be invoked remotely?
         /// </summary>
-        public NodeHostingModel NodeHostingModel { get; set; }
+        public Func<INodeInstance> NodeInstanceFactory { get; set; }
 
         public ILogger NodeInstanceOutputLogger { get; set; }
     }
