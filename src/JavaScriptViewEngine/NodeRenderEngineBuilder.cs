@@ -1,6 +1,4 @@
-﻿#if DI
-using Microsoft.Extensions.Options;
-#endif
+﻿using Microsoft.Extensions.Options;
 using System;
 
 namespace JavaScriptViewEngine
@@ -16,9 +14,7 @@ namespace JavaScriptViewEngine
         private readonly IServiceProvider _serviceProvider;
 
         public NodeRenderEngineBuilder(
-            #if DOTNETCORE
             Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnvironment, 
-            #endif
             IServiceProvider serviceProvider,
             IOptions<NodeRenderEngineOptions> options)
         {
@@ -26,11 +22,7 @@ namespace JavaScriptViewEngine
             _options = options.Value;
             if (string.IsNullOrEmpty(_options.ProjectDirectory))
             {
-                #if DOTNETCORE
                 _options.ProjectDirectory = hostingEnvironment.WebRootPath;
-                #else
-                _options.ProjectDirectory = System.Web.Hosting.HostingEnvironment.MapPath("~/App_Data");
-                #endif
             }
         }
 

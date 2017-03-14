@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-#if DOTNETCORE
 using Microsoft.AspNetCore.Routing;
-#else
-using System.Web.Routing;
-#endif
 using Newtonsoft.Json;
 
 namespace JavaScriptViewEngine

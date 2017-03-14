@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace JavaScriptViewEngine.Pool
+﻿namespace JavaScriptViewEngine.Pool
 {
     /// <summary>
 	/// Contains metadata relating to a render engine.

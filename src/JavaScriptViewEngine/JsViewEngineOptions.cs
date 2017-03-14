@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace JavaScriptViewEngine
+﻿namespace JavaScriptViewEngine
 {
     /// <summary>
     /// Options used to configure the JavaScript view engine

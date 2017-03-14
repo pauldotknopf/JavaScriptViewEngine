@@ -1,14 +1,8 @@
 ﻿using System;
-using JavaScriptViewEngine.Pool;
-using Microsoft.AspNetCore.NodeServices;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.NodeServices.HostingModels;
-#if DOTNETCORE
 using Microsoft.AspNetCore.Routing;
-#else
-using System.Web.Routing;
-#endif
 
 namespace JavaScriptViewEngine
 {
@@ -31,14 +25,6 @@ namespace JavaScriptViewEngine
         /// this directory.
         /// </summary>
         public string ProjectDirectory { get; set; }
-
-        /// <summary>
-        /// Areas in MVC are translated to the file to invoke in node.
-        /// "default" is default. If you would like to invoke another
-        /// script based on a route value, implement that logic here.
-        /// </summary>
-        [Obsolete("This isn't used any more. Use 'GetModuleName' instead.", true)]
-        public Func<string, string> GetArea = (area) => area;
 
         /// <summary>
         /// The delegate that determines what node module to invoke the 'RenderView' and 'RenderPartialView' methods from.

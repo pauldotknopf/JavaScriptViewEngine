@@ -1,8 +1,5 @@
-﻿#if MVCCORE1
-using Microsoft.AspNetCore.Mvc.ViewEngines;
-#else
-using System.Web.Mvc;
-#endif
+﻿using Microsoft.AspNetCore.Mvc.ViewEngines;
+
 namespace JavaScriptViewEngine
 {
     /// <summary>

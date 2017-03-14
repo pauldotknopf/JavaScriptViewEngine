@@ -1,19 +1,10 @@
-﻿using JavaScriptViewEngine.Middleware;
-using System;
-using JavaScriptViewEngine.Pool;
-#if DOTNETCORE
+﻿using System;
+using JavaScriptViewEngine.Middleware;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc;
-using AppBuilder = Microsoft.AspNetCore.Builder.IApplicationBuilder;
-#else
-using Owin;
-using AppBuilder = Owin.IAppBuilder;
-#endif
-#if DI
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
-#endif
+using Microsoft.AspNetCore.Mvc;
 
 namespace JavaScriptViewEngine
 {
@@ -26,36 +17,9 @@ namespace JavaScriptViewEngine
         /// Added the middlware that creates and disposes a <see cref="IRenderEngine"/> for each request
         /// </summary>
         /// <param name="app">The application.</param>
-        public static void UseJsEngine(
-            this AppBuilder app
-            #if !DOTNETCORE
-            , IRenderEngineFactory renderEngineFactory
-            #endif
-            )
+        public static void UseJsEngine(this IApplicationBuilder app)
         {
-            #if !DOTNETCORE
-            app.Use<RenderEngineMiddleware>(renderEngineFactory);
-            #else
             app.UseMiddleware<RenderEngineMiddleware>();
-            #endif
-        }
-
-        #if DI
-
-        /// <summary>
-        /// Add the services required to use a render engine, a pool, etc.
-        /// </summary>
-        /// <param name="services">The services.</param>
-        [Obsolete("Use the overload that uses the 'JsEngineServiceBuilder'.")]
-        public static void AddJsEngine(this IServiceCollection services)
-        {
-            services.AddJsEngine(builder =>
-            {
-                // We are using polled here, simply because that is what this method did previously.
-                builder.UsePooledEngineFactory();
-                // Same thing as ^
-                builder.UseNodeRenderEngine();
-            });
         }
 
         /// <summary>
@@ -110,22 +74,6 @@ namespace JavaScriptViewEngine
             private Action<IServiceCollection> _renderEngineBuilderAction;
 
             internal JsEngineServiceBuilder() {  }
-
-            public JsEngineServiceBuilder UsePooledEngineFactory(Action<RenderPoolOptions> renderPoolOptionsSetupAction = null)
-            {
-                if(_engineFactoryAction != null)
-                    throw new Exception("You have already registered an engine factory.");
-
-                _engineFactoryAction = services =>
-                {
-                    services.TryAddTransient<IRenderEnginePool, RenderEnginePool>();
-                    services.TryAddSingleton<IRenderEngineFactory, PooledRenderEngineFactory>();
-                    if(renderPoolOptionsSetupAction != null)
-                        services.Configure(renderPoolOptionsSetupAction);
-                };
-
-                return this;
-            }
 
             public JsEngineServiceBuilder UseSingletonEngineFactory()
             {
@@ -197,7 +145,5 @@ namespace JavaScriptViewEngine
                 services.TryAddTransient<IJsViewEngine, JsViewEngine>();
             }
         }
-
-        #endif
     }
 }

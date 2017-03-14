@@ -2,11 +2,7 @@
 using Microsoft.AspNetCore.NodeServices;
 using JavaScriptViewEngine.Utils;
 using System;
-#if DOTNETCORE
 using Microsoft.AspNetCore.Routing;
-#else
-using System.Web.Routing;
-#endif
 
 namespace JavaScriptViewEngine
 {

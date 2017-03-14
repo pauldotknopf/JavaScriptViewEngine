@@ -4,9 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
-#if DI
 using Microsoft.Extensions.Options;
-#endif
 
 namespace JavaScriptViewEngine.Pool
 {

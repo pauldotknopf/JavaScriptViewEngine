@@ -1,4 +1,4 @@
-﻿module.exports = {
+module.exports = {
     renderView: function (callback, path, model, viewBag, routeValues) {
         callback(null, {
             html: "<html><head></head><body>" +
