@@ -2,6 +2,10 @@
 
 An ASP.NET MVC (MVC Core 1, MVC 6) ViewEngine for rendering markup in a javascript environment. Ideal for React and Angular server-side rendering.
 
+|ASP.NET MVC Core 1 |ASP.NET MVC 5 |
+|:------:|:------:|
+|[![JavaScriptViewEngine.MvcCore1](https://img.shields.io/nuget/v/JavaScriptViewEngine.MvcCore1.svg?style=flat-square&label=JavaScriptViewEngine.MvcCore1)](http://www.nuget.org/packages/JavaScriptViewEngine.MvcCore1/)|[![JavaScriptViewEngine.MvcCore1](https://img.shields.io/nuget/v/JavaScriptViewEngine.Mvc5.svg?style=flat-square&label=JavaScriptViewEngine.Mvc5)](http://www.nuget.org/packages/JavaScriptViewEngine.Mvc5/)|
+
 # Why?
 
 The main drive behind this is to support isomorphic/universal rendering. The idea is that your ```Model``` will be passed to a javascript method that will render markup in return. Imagine having a react component tree that is hydrated via a single immutable JSON structure, representing the initial state of the service-side rendered page.
