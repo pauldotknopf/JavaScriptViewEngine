@@ -1,0 +1,16 @@
+{
+    "version": "0.1.0",
+    "tasks": [
+        {
+            "taskName": "build",
+            "command": "dotnet",
+            "isShellCommand": true,
+            "args": [
+                "build",
+                "${workspaceRoot}\\samples\\Samples.MvcCore\\Samples.MvcCore.csproj"
+            ],
+            "isBuildCommand": true,
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}

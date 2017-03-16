@@ -2,6 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
+    <PackageId>JavaScriptViewEngine.MvcCore1</PackageId>
+    <PackageTags>JavaScript aspnet mvc viewengine</PackageTags>
+    <Authors>Paul</Authors>
+    <Company />
+    <Product />
+    <PackageProjectUrl>https://github.com/pauldotknopf/JavaScriptViewEngine</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/pauldotknopf/JavaScriptViewEngine/blob/master/LICENSE</PackageLicenseUrl>
+    <Description>An ASP.NET ViewEngine that uses javscript to render markup (for universal rendering)</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
