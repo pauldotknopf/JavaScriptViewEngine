@@ -1,9 +1,16 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
+#if DOTNETCORE
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
+#else
+using System.Web.Mvc;
+#endif
+#if DI
 using Microsoft.Extensions.Options;
+#endif
 
 namespace JavaScriptViewEngine
 {
@@ -22,6 +29,8 @@ namespace JavaScriptViewEngine
         {
             _options = options.Value;
         }
+
+        #if DOTNETCORE
 
         public ViewEngineResult FindView(ActionContext context, string viewName, bool isMainPage)
         {
@@ -53,6 +62,45 @@ namespace JavaScriptViewEngine
             });
         }
 
+        #else
+
+        public ViewEngineResult FindPartialView(ControllerContext controllerContext, string partialViewName, bool useCache)
+        {
+            if (!string.IsNullOrEmpty(_options.ViewNamePrefix))
+            {
+                if (!partialViewName.StartsWith(_options.ViewNamePrefix))
+                    return new ViewEngineResult(new string[] { partialViewName });
+            }
+
+            return new ViewEngineResult(new JsView
+            {
+                Path = !string.IsNullOrEmpty(_options.ViewNamePrefix) ? partialViewName.Substring(_options.ViewNamePrefix.Length) : partialViewName,
+                ViewType = ViewType.Partial
+            }, this);
+        }
+
+        public ViewEngineResult FindView(ControllerContext controllerContext, string viewName, string masterName, bool useCache)
+        {
+            if (!string.IsNullOrEmpty(_options.ViewNamePrefix))
+            {
+                if (!viewName.StartsWith(_options.ViewNamePrefix))
+                    return new ViewEngineResult(new string[] { viewName });
+            }
+
+            return new ViewEngineResult(new JsView
+            {
+                Path = !string.IsNullOrEmpty(_options.ViewNamePrefix) ? viewName.Substring(_options.ViewNamePrefix.Length) : viewName,
+                ViewType = ViewType.Full
+            }, this);
+        }
+
+        public void ReleaseView(ControllerContext controllerContext, IView view)
+        {
+
+        }
+
+        #endif
+
         /// <summary>
         /// The view that invokes a javascript engine with the model, and writes the output to the response.
         /// </summary>
@@ -70,46 +118,93 @@ namespace JavaScriptViewEngine
             /// </summary>
             public ViewType ViewType { get; set; }
 
-			public async Task RenderAsync(ViewContext context)
-			{
-				var renderEngine = context.HttpContext.Request.HttpContext.Items["RenderEngine"] as IRenderEngine;
-				if (renderEngine == null) throw new Exception("Couldn't get IRenderEngine from the context request items.");
+            #if DOTNETCORE
+            
+            public async Task RenderAsync(ViewContext context)
+            {
+                var renderEngine = context.HttpContext.Request.HttpContext.Items["RenderEngine"] as IRenderEngine;
+                if (renderEngine == null) throw new Exception("Couldn't get IRenderEngine from the context request items.");
+                
+                var path = Path;
+                if (string.Equals(path, "{auto}", StringComparison.OrdinalIgnoreCase))
+                {
+                    path = context.HttpContext.Request.Path;
+                    if (context.HttpContext.Request.QueryString.HasValue)
+                    {
+                        path += context.HttpContext.Request.QueryString.Value;
+                    }
+                }
 
-				var path = Path;
-				if (string.Equals(path, "{auto}", StringComparison.OrdinalIgnoreCase))
-				{
-					path = context.HttpContext.Request.Path;
-					if (context.HttpContext.Request.QueryString.HasValue)
-					{
-						path += context.HttpContext.Request.QueryString.Value;
-					}
-				}
+                string areaObject;
+                context.ActionDescriptor.RouteValues.TryGetValue("area", out areaObject);
 
-				string areaObject;
-				context.ActionDescriptor.RouteValues.TryGetValue("area", out areaObject);
+                if (areaObject == null)
+                {
+                    areaObject = "default";
+                }
 
-				if (areaObject == null)
-				{
-					areaObject = "default";
-				}
+                var result = await renderEngine.RenderAsync(path, context.ViewData.Model, context.ViewBag, context.RouteData.Values, areaObject, ViewType);
 
-				var result = await renderEngine.RenderAsync(path, context.ViewData.Model, context.ViewBag, context.RouteData.Values, areaObject, ViewType);
+                if (ViewType == ViewType.Full)
+                {
+                    if (!string.IsNullOrEmpty(result.Redirect))
+                    {
+                        context.HttpContext.Response.Redirect(result.Redirect);
+                        return;
+                    }
+                    context.HttpContext.Response.StatusCode = result.Status;
+                    await context.Writer.WriteAsync(result.Html);
+                }
+                else
+                {
+                    await context.Writer.WriteAsync(result.Html);   
+                }
+            }
 
-				if (ViewType == ViewType.Full)
-				{
-					if (!string.IsNullOrEmpty(result.Redirect))
-					{
-						context.HttpContext.Response.Redirect(result.Redirect);
-						return;
-					}
-					context.HttpContext.Response.StatusCode = result.Status;
-					await context.Writer.WriteAsync(result.Html);
-				}
-				else
-				{
-					await context.Writer.WriteAsync(result.Html);
-				}
-			}
+            #else
+
+            public void Render(ViewContext viewContext, TextWriter writer)
+            {
+                var renderEngine = viewContext.HttpContext.Items["RenderEngine"] as IRenderEngine;
+                if (renderEngine == null) throw new Exception("Couldn't get IRenderEngine from the context request items.");
+
+                var path = Path;
+                if (string.Equals(path, "{auto}", StringComparison.OrdinalIgnoreCase))
+                {
+                    path = viewContext.HttpContext.Request.Path;
+                    if (viewContext.HttpContext.Request.QueryString != null && viewContext.HttpContext.Request.QueryString.Count > 0)
+                    {
+                        path += "?" + viewContext.HttpContext.Request.QueryString.ToString();
+                    }
+                }
+
+                object areaObject;
+                viewContext.RouteData.Values.TryGetValue("area", out areaObject);
+
+                if (areaObject == null)
+                {
+                    areaObject = "default";
+                }
+
+                var result = renderEngine.Render(path, viewContext.ViewData.Model, viewContext.ViewBag, viewContext.RouteData.Values, areaObject.ToString(), ViewType);
+
+                if (ViewType == ViewType.Full)
+                {
+                    if (!string.IsNullOrEmpty(result.Redirect))
+                    {
+                        viewContext.HttpContext.Response.Redirect(result.Redirect);
+                        return;
+                    }
+                    viewContext.HttpContext.Response.StatusCode = result.Status;
+                    writer.Write(result.Html);
+                }
+                else
+                {
+                    writer.Write(result.Html);
+                }
+            }
+
+            #endif
         }
     }
 }

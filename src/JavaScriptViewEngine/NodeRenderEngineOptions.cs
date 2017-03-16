@@ -2,7 +2,11 @@
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.NodeServices.HostingModels;
+#if DOTNETCORE
 using Microsoft.AspNetCore.Routing;
+#else
+using System.Web.Routing;
+#endif
 
 namespace JavaScriptViewEngine
 {

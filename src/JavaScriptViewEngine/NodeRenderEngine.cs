@@ -2,7 +2,11 @@
 using Microsoft.AspNetCore.NodeServices;
 using JavaScriptViewEngine.Utils;
 using System;
+#if DOTNETCORE
 using Microsoft.AspNetCore.Routing;
+#else
+using System.Web.Routing;
+#endif
 
 namespace JavaScriptViewEngine
 {
@@ -24,7 +28,7 @@ namespace JavaScriptViewEngine
         {
             _options = options;
 
-            var nodeOptions = new NodeServicesOptions(serviceProvider)
+            var nodeOptions = new NodeServicesOptions(serviceProvider ?? new EmptyServiceProvider())
             {
                 ProjectPath = options.ProjectDirectory,
                 WatchFileExtensions = options.WatchFileExtensions,
@@ -86,6 +90,14 @@ namespace JavaScriptViewEngine
         {
             _nodeServices?.Dispose();
             _nodeServices = null;
+        }
+
+        internal class EmptyServiceProvider : IServiceProvider
+        {
+            public object GetService(Type serviceType)
+            {
+                return null;
+            }
         }
     }
 }

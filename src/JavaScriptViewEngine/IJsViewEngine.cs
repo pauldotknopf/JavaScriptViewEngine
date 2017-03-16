@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc.ViewEngines;
+﻿#if DOTNETCORE
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+#else
+using System.Web.Mvc;
+#endif
 
 namespace JavaScriptViewEngine
 {
