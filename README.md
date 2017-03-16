@@ -29,15 +29,11 @@ There were existing projects out there that allowed us to render javascript. All
     - Opinionated
     - No .NET Core support.
 
-**TO BE DONE**
-- [X] ~~Fix ```dnxcore50``` support in the VroomJs dependency. It has many peices that need to be ```#ifdef```'d or updated to use the newer .NET API.~~ Done.
-- [X] ~~Support older versions of MVC. The older versions aren't really conducive to *gulp*y environments, but it is nice to have the support there in case anybody needs it.~~ MvcCore1 and Mvc6 supported.
-- [X] ~~Create boilerplate for getting started with React~~ Done, [react-aspnet-boilerplate](https://github.com/pauldotknopf/react-aspnet-boilerplate))
-- [ ] Create boilerplate for getting started with Angular.
-
 # Example projects
 
 Checkout the [JavaScriptViewEngine.Samples](https://github.com/pauldotknopf/JavaScriptViewEngine.Samples/tree/master/src) repo!
+
+Or, checkout the [react-aspnet-boilerplate](https://github.com/pauldotknopf/react-aspnet-boilerplate).
 
 # In a nutshell
 
