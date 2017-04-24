@@ -32,7 +32,9 @@ namespace JavaScriptViewEngine
             {
                 ProjectPath = options.ProjectDirectory,
                 WatchFileExtensions = options.WatchFileExtensions,
-                EnvironmentVariables = options.EnvironmentVariables
+                EnvironmentVariables = options.EnvironmentVariables,
+                DebuggingPort = options.DebuggingPort,
+                LaunchWithDebugging = options.LaunchWithDebugging
             };
 
 	        if (options.NodeInstanceFactory != null)

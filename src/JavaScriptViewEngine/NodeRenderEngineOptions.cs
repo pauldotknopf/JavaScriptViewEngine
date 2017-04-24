@@ -56,7 +56,17 @@ namespace JavaScriptViewEngine
         /// If set, starts the Node.js instance with the specified environment variables.
         /// </summary>
         public IDictionary<string, string> EnvironmentVariables { get; set; }
-    }
+
+        /// <summary>
+        /// If true, the Node.js instance will accept incoming V8 debugger connections (e.g., from node-inspector).
+        /// </summary>
+        public bool LaunchWithDebugging { get; set; }
+
+        /// <summary>
+        /// If <see cref="LaunchWithDebugging"/> is true, the Node.js instance will listen for V8 debugger connections on this port.
+        /// </summary>
+        public int DebuggingPort { get; set; }
+     }
 
     public delegate string GetModuleNameDelegate(string path, object model, dynamic viewBag, RouteValueDictionary routeValues, string area, ViewType viewType);
 }
