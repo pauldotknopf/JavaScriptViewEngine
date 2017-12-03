@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net452</TargetFramework>
+    <PackageId>JavaScriptViewEngine.Mvc5</PackageId>
+    <PackageTags>JavaScript aspnet mvc viewengine</PackageTags>
+    <Authors>Paul</Authors>
+    <Company />
+    <Product />
+    <PackageProjectUrl>https://github.com/pauldotknopf/JavaScriptViewEngine</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/pauldotknopf/JavaScriptViewEngine/blob/master/LICENSE</PackageLicenseUrl>
+    <Description>An ASP.NET ViewEngine that uses javscript to render markup (for universal rendering)</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="../JavaScriptViewEngine/**/*.cs" Exclude="../JavaScriptViewEngine/bin/**/*;../JavaScriptViewEngine/obj/**/*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.NodeServices" Version="1.1.0" />
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.3" />
+    <PackageReference Include="Microsoft.Owin" Version="3.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Routing" />
+  </ItemGroup>
+</Project>
